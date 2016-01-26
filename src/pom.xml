@@ -156,7 +156,7 @@
                 <spark.bin.version>1.3</spark.bin.version>
             </properties>
             <activation>
-                <property><name>!spark1.2</name></property>
+                <property><name>spark1.3</name></property>
             </activation>
 	    <modules>
 	      <module>streambench</module>
@@ -201,7 +201,7 @@
                 <spark.bin.version>1.6</spark.bin.version>
             </properties>
             <activation>
-                <property><name>spark1.6</name></property>
+                <property><name>!spark1.6</name></property>
             </activation>
 	    <modules>
 	      <module>streambench</module>
