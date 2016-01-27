@@ -8,7 +8,9 @@ if [ "$(id -u)" != "0" ]; then
     exit 1
 fi
 
-source user-env.sh
+DIR=`dirname "$0"`
+
+source $DIR/user-env.sh
 
 # install basic build environment
 sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list

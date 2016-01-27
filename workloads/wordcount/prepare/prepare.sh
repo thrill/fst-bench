@@ -24,12 +24,20 @@ show_bannar start
 
 rmr-hdfs $INPUT_HDFS || true
 START_TIME=`timestamp`
-run-hadoop-job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
-    -D ${BYTES_TOTAL_NAME}=${DATASIZE} \
-    -D ${MAP_CONFIG_NAME}=${NUM_MAPS} \
-    -D ${REDUCER_CONFIG_NAME}=${NUM_REDS} \
-    ${COMPRESS_OPT} \
-    ${INPUT_HDFS}
+
+# run-hadoop-job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
+#     -D ${BYTES_TOTAL_NAME}=${DATASIZE} \
+#     -D ${MAP_CONFIG_NAME}=${NUM_MAPS} \
+#     -D ${REDUCER_CONFIG_NAME}=${NUM_REDS} \
+#     ${COMPRESS_OPT} \
+#     ${INPUT_HDFS}
+
 #run-spark-job com.intel.sparkbench.datagen.RandomTextWriter $INPUT_HDFS ${DATASIZE}
+
+OUT=${INPUT_HDFS##file://}
+
+mkdir -p "$OUT"
+$HOME/thrill/build/benchmarks/word_count/random_text_writer ${DATASIZE} > ${OUT}/input.txt
+
 END_TIME=`timestamp`
 
