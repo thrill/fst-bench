@@ -39,3 +39,4 @@ export SPARK_HOME=$HOME/local/spark-${SPARK_VERSION_DETAIL}
 export SPARK_MASTER_IP=localhost
 
 export FLINK_HOME=$HOME/local/flink-${FLINK_VERSION_DETAIL}
+export PATH=$PATH:$FLINK_HOME/bin
