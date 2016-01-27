@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -520,7 +520,9 @@ def parse_bench_log(benchlog_fn):
     events=["x,event"]
     _spark_stage_submit = re.compile("^(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) INFO [a-zA-Z0-9_\.]*DAGScheduler: Submitting (Stage \d+) \((.*)\).+$") # submit spark stage
     _spark_stage_finish = re.compile("^(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) INFO [a-zA-Z0-9_\.]*DAGScheduler: (Stage \d+) \((.*)\) finished.+$")   # spark stage finish
-    _hadoop_run_job = re.compile("^(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) INFO mapred.*\.Job.*: Running job: job_([\d_]+)$") # hadoop run job
+    _thrill_stage_start = re.compile("^.*[0-9]*,\"START \((.*)\) stage\":\"([a-zA-Z]*)\".*time:\":\"(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})\".*$")
+    _thrill_stage_finish = re.compile("^.*[0-9]*,\"FINISH \((.*)\) stage\":\"([a-zA-Z]*)\".*time:\":\"(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2})\".*$")
+    _hadoop_run_job = re.compile("^(\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}:\d{2}) INFO mapred.*\.Job.*: Running job: job_([\d_]+)$") # hadoop run job
     _hadoop_map_reduce_progress = re.compile("^(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) INFO mapred.*\.Job.*:\s+map (\d{1,2})% reduce (\d{1,2})%$") # hadoop reduce progress
     _hadoop_job_complete_mr1 = re.compile("^(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) INFO mapred.JobClient: Job complete: job_([\d_]+)$")
     _hadoop_job_complete_mr2 = re.compile("^(\d{2}\/\d{2}\/\d{2} \d{2}:\d{2}:\d{2}) INFO mapreduce.Job: Job job_([\d_]+) completed successfully$")
@@ -544,15 +546,26 @@ def parse_bench_log(benchlog_fn):
         while True:
             line = f.readline().rstrip()
             if not line: break
-            for rule in [_spark_stage_submit, _spark_stage_finish, _hadoop_run_job, _hadoop_map_reduce_progress, _hadoop_job_complete_mr1, _hadoop_job_complete_mr2]:
+            for rule in [_spark_stage_submit, _spark_stage_finish, _hadoop_run_job, _hadoop_map_reduce_progress, _hadoop_job_complete_mr1, _hadoop_job_complete_mr2, _thrill_stage_start, _thrill_stage_finish]:
                 matched = rule.match(line)
                 if matched:
                     result = matched.groups()
-                    timestamp = datetime.strptime(result[0], r"%y/%m/%d %H:%M:%S").strftime("%s")+"000" # convert to millsec for js
                     if rule is _spark_stage_submit:
+			timestamp = datetime.strptime(result[0], r"%y/%m/%d %H:%M:%S").strftime("%s")+"000" # convert to millsec for js
                         events.append("{t},Start {v1} ({v2})".format(t=timestamp, v1=result[1], v2=result[2]))
                     elif rule is _spark_stage_finish:
+			timestamp = datetime.strptime(result[0], r"%y/%m/%d %H:%M:%S").strftime("%s")+"000" # convert to millsec for js
                         events.append("{t},Finish {v1} ({v2})".format(t=timestamp, v1=result[1], v2=result[2]))
+                    if rule is _thrill_stage_start:
+			timestamp = datetime.strptime(result[2], r"%m/%d/%y %H:%M:%S").strftime("%s")+"000" # convert to millsec for js
+			elem = "{t},Start {v1} ({v2})".format(t=timestamp, v1=result[1], v2=result[0])
+			if not elem in events:
+				events.append(elem)
+                    elif rule is _thrill_stage_finish:
+			timestamp = datetime.strptime(result[2], r"%m/%d/%y %H:%M:%S").strftime("%s")+"000" # convert to millsec for js
+			elem = "{t},Finish {v1} ({v2})".format(t=timestamp, v1=result[1], v2=result[0])
+			if not elem in events:
+				events.append(elem)
                     elif rule is _hadoop_run_job:
                         events.append("{t},Start Job {v1}".format(t=timestamp, v1=result[1]))
                         flag={}

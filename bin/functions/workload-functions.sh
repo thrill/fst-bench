@@ -219,6 +219,54 @@ function check_compress() {
   fi
 }
 
+function run-flink-job() {
+    LIB_JARS=
+    while (($#)); do
+      if [ "$1" = "--jars" ]; then
+        LIB_JARS="--jars $2"
+        shift 2
+        continue
+      fi
+      break
+    done
+
+    # export_withlog SPARKBENCH_PROPERTIES_FILES
+
+    CLS=$1
+    shift
+
+    SUBMIT_CMD="${FLINK_HOME}/bin/flink run --class $CLS ${LIB_JARS} ${FLINKBENCH_JAR} $@"
+
+    echo -e "${BGreen}Submit Flink job: ${Green}${SUBMIT_CMD}${Color_Off}"
+    MONITOR_PID=`start-monitor`
+    execute_withlog ${SUBMIT_CMD}
+    result=$?
+    stop-monitor ${MONITOR_PID}
+    if [ $result -ne 0 ]
+    then
+        echo -e "${BRed}ERROR${Color_Off}: Flink job failed to run successfully."
+        exit $result
+    fi
+}
+
+function run-thrill-job() {
+    # export_withlog SPARKBENCH_PROPERTIES_FILES
+
+    SUBMIT_CMD="${THRILL_HOME}/scripts/ssh/invoke.sh -h '${SLAVES}' ${THRILL_EXEC} $@"
+        echo ${SUBMIT_CMD}
+
+    echo -e "${BGreen}Submit Thrill job: ${Green}${SUBMIT_CMD}${Color_Off}"
+    MONITOR_PID=`start-monitor`
+    execute_withlog ${SUBMIT_CMD}
+    result=$?
+    stop-monitor ${MONITOR_PID}
+    if [ $result -ne 0 ]
+    then
+        echo -e "${BRed}ERROR${Color_Off}: Thrill job failed to run successfully."
+        exit $result
+    fi
+}
+
 function run-spark-job() {
     LIB_JARS=
     while (($#)); do

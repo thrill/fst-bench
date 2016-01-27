@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -14,13 +14,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from monitor import generate_report
-import sys
+workload_folder=`dirname "$0"`
+workload_folder=`cd "$workload_folder"; pwd`
+workload_root=${workload_folder}/../../..
+. "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-if len(sys.argv)<4:
-    print """Usage:
-    monitor_replot.py <workload_name> <log_path.log> <bench_log_path.log> <report_path.html>
-"""
-    sys.exit(1)
+enter_bench JavaFlinkWordcount ${workload_root} ${workload_folder}
+show_bannar start
 
-generate_report(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
+rmr-hdfs $OUTPUT_HDFS || true
+
+SIZE=`dir_size $INPUT_HDFS`
+START_TIME=`timestamp`
+
+run-flink-job com.intel.flinkbench.ScalaWordCount $INPUT_HDFS $OUTPUT_HDFS
+
+END_TIME=`timestamp`
+
+gen_report ${START_TIME} ${END_TIME} ${SIZE}
+show_bannar finish
+leave_bench

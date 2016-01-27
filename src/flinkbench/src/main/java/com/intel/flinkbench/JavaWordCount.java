@@ -45,7 +45,7 @@ import org.apache.commons.lang3.StringUtils;
  *
  */
 @SuppressWarnings("serial")
-public class WordCount {
+public class JavaWordCount {
 
     // *************************************************************************
     //     PROGRAM
@@ -116,7 +116,7 @@ public class WordCount {
             outputPath = args[1];
             return true;
         } else {
-            System.err.println("Usage: WordCount <text path> <result path>");
+            System.err.println("Usage: JavaWordCount <text path> <result path>");
             return false;
         }
     }

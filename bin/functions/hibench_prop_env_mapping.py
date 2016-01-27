@@ -35,6 +35,7 @@ HiBenchEnvPropMappingMandatory=dict(
     DEPENDENCY_DIR="hibench.dependency.dir",
     REPORT_COLUMN_FORMATS="hibench.report.formats",
     SPARKBENCH_JAR="hibench.sparkbench.jar",
+    FLINKBENCH_JAR="hibench.flinkbench.jar",
     HIBENCH_PYTHON_PATH="hibench.sparkbench.python.dir",
     NUM_MAPS="hibench.default.map.parallelism",
     NUM_REDS="hibench.default.shuffle.parallelism",

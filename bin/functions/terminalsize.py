@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2.7
 """
 from https://gist.github.com/jtriley/1108174
 """
