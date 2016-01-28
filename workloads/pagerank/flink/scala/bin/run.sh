@@ -19,17 +19,16 @@ workload_folder=`cd "$workload_folder"; pwd`
 workload_root=${workload_folder}/../../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench JavaSparkPagerank ${workload_root} ${workload_folder}
+enter_bench ScalaSparkPagerank ${workload_root} ${workload_folder}
 show_bannar start
 
 rmr-hdfs $OUTPUT_HDFS || true
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-spark-job org.apache.spark.examples.JavaPageRank $PAGES $INPUT_HDFS/edges $OUTPUT_HDFS $NUM_ITERATIONS
+run-spark-job org.apache.spark.examples.SparkPageRank $INPUT_HDFS/edges $OUTPUT_HDFS $NUM_ITERATIONS
 END_TIME=`timestamp`
 
 gen_report ${START_TIME} ${END_TIME} ${SIZE}
 show_bannar finish
 leave_bench
-

@@ -36,12 +36,9 @@ OPTION="-t pagerank \
 
 run-hadoop-job ${DATATOOLS} HiBench.DataGen ${OPTION} ${DATATOOLS_COMPRESS_OPT}
 
+#run-spark-job com.intel.sparkbench.datagen.convert.PagerankConvert ${INPUT_HDFS_DIR}/edges ${INPUT_HDFS}
+
 END_TIME=`timestamp`
 
 show_bannar finish
 leave_bench
-
-
-
-#run-spark-job com.intel.sparkbench.datagen.convert.PagerankConvert ${INPUT_HDFS_DIR}/edges ${INPUT_HDFS}
-
