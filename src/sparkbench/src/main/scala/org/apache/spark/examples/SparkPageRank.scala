@@ -57,20 +57,21 @@ object SparkPageRank {
       (parts(0), parts(1))
     }.distinct().groupByKey().cache()
     var ranks = links.mapValues(v => 1.0)
+    val numPages = ranks.count()
 
     for (i <- 1 to iters) {
       val contribs = links.join(ranks).values.flatMap{ case (urls, rank) =>
         val size = urls.size
         urls.map(url => (url, rank / size))
       }
-      ranks = contribs.reduceByKey(_ + _).mapValues(0.15 + 0.85 * _)
+      ranks = contribs.reduceByKey(_ + _).mapValues(0.85 * _ + 0.15 / numPages)
     }
 
 //    val output = ranks.collect()
 //    output.foreach(tup => println(tup._1 + " has rank: " + tup._2 + "."))
-    val io = new IOCommon(ctx)
-    io.save(output_path, ranks)
-//    ranks.saveAsTextFile(output_path)
+    //val io = new IOCommon(ctx)
+    //io.save(output_path, ranks)
+    ranks.saveAsTextFile(output_path)
 
     ctx.stop()
   }

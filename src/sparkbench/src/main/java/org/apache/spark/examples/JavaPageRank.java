@@ -133,7 +133,7 @@ public final class JavaPageRank {
 
     //IOCommon io = new IOCommon(JavaSparkContext.toSparkContext(ctx));
     //io.save(args[1], ranks.rdd());
-    ranks.sortByKey().saveAsTextFile(args[2]);
+    ranks.saveAsTextFile(args[2]);
 
     ctx.stop();
   }
