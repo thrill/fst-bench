@@ -252,8 +252,11 @@ function run-flink-job() {
 function run-thrill-job() {
     # export_withlog SPARKBENCH_PROPERTIES_FILES
 
-    SUBMIT_CMD="${THRILL_HOME}/scripts/ssh/invoke.sh -h '${SLAVES}' ${THRILL_EXEC} $@"
-        echo ${SUBMIT_CMD}
+    THRILL_EXEC=$1
+    shift
+
+    SUBMIT_CMD="${THRILL_HOME}/run_scripts/ssh/invoke.sh -h '${SLAVES}' '${THRILL_HOME}/${THRILL_EXEC}' $@"
+    echo ${SUBMIT_CMD}
 
     echo -e "${BGreen}Submit Thrill job: ${Green}${SUBMIT_CMD}${Color_Off}"
     MONITOR_PID=`start-monitor`

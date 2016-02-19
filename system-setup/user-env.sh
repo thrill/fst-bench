@@ -40,3 +40,5 @@ export SPARK_MASTER_IP=localhost
 
 export FLINK_HOME=$HOME/local/flink-${FLINK_VERSION_DETAIL}
 export PATH=$PATH:$FLINK_HOME/bin
+
+export THRILL_HOME=$HOME/thrill
