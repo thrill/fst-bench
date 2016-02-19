@@ -29,6 +29,7 @@ run-hadoop-job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
     -D ${MAP_CONFIG_NAME}=${NUM_MAPS} \
     -D ${REDUCER_CONFIG_NAME}=${NUM_REDS} \
     ${COMPRESS_OPT} \
+    -outFormat org.apache.hadoop.mapreduce.lib.output.TextOutputFormat \
     ${INPUT_HDFS}
 #run-spark-job com.intel.sparkbench.datagen.RandomTextWriter $INPUT_HDFS ${DATASIZE}
 END_TIME=`timestamp`
