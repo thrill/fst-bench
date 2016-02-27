@@ -82,6 +82,7 @@ HiBenchEnvPropMapping=dict(
 
     # For hive related workload, data scale
     PAGES="hibench.workload.pages",
+    SCALE="hibench.scale.profile",
     USERVISITS="hibench.workload.uservisits",
     HIVE_INPUT="hibench.hive.dir.name.input",
     HIVE_BASE_HDFS="hibench.hive.base.hdfs",
