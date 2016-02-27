@@ -30,7 +30,7 @@ apt-get install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-dev
 apt-get install -y python-pip
 
 # install numpy and matplotlib
-apt-get install -y python-numpy python-matplotlib
+apt-get install -y --force-yes python-numpy python-matplotlib
 
 # Install Java
 
