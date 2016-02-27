@@ -91,7 +91,8 @@ public final class JavaPageRank {
 
     // Loads all URLs with other URL(s) link to from input file and initialize
     // ranks of them to one / n.
-    JavaPairRDD<Long, Double> ranks = links.mapValues(new Function<Iterable<Long>, Double>() {
+    JavaPairRDD<Long, Double> ranks = links
+        .mapValues(new Function<Iterable<Long>, Double>() {
       @Override
       public Double call(Iterable<Long> rs) {
         return 1.0d / numPages;

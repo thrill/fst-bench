@@ -77,7 +77,6 @@ import org.apache.flink.api.java.operators.IterativeDataSet;
 public class JavaPageRankBasic {
 
     private static final double DAMPENING_FACTOR = 0.85;
-    private static final double EPSILON = 0.0001;
 
     // *************************************************************************
     //     PROGRAM
@@ -118,10 +117,7 @@ public class JavaPageRankBasic {
             .map(new Dampener(DAMPENING_FACTOR, numPages));
 
         DataSet<Tuple2<Long, Double>> finalPageRanks = iteration
-            .closeWith(newRanks,
-                       newRanks.join(iteration).where(0).equalTo(0)
-                       // termination condition
-                       .filter(new EpsilonFilter()));
+            .closeWith(newRanks);
 
         // emit result
         finalPageRanks.writeAsCsv(outputPath, "\n", " ");
@@ -215,19 +211,6 @@ public class JavaPageRankBasic {
         public Tuple2<Long, Double> map(Tuple2<Long, Double> value) {
             value.f1 = (value.f1 * dampening) + randomJump;
             return value;
-        }
-    }
-
-    /**
-     * Filter that filters vertices where the rank difference is below a
-     * threshold.
-     */
-    public static final class EpsilonFilter
-        implements FilterFunction<Tuple2<Tuple2<Long, Double>, Tuple2<Long, Double>>>
-    {
-        @Override
-        public boolean filter(Tuple2<Tuple2<Long, Double>, Tuple2<Long, Double>> value) {
-            return Math.abs(value.f0.f1 - value.f1.f1) > EPSILON;
         }
     }
 
