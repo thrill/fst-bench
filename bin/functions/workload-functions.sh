@@ -255,7 +255,7 @@ function run-thrill-job() {
     THRILL_EXEC=$1
     shift
 
-    SUBMIT_CMD="${THRILL_HOME}/run_scripts/ssh/invoke.sh -h '${SLAVES}' '${THRILL_HOME}/${THRILL_EXEC}' $@"
+    SUBMIT_CMD="${THRILL_HOME}/run/slurm/invoke.sh '${THRILL_HOME}/${THRILL_EXEC}' $@"
     echo ${SUBMIT_CMD}
 
     echo -e "${BGreen}Submit Thrill job: ${Green}${SUBMIT_CMD}${Color_Off}"
