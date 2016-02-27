@@ -11,7 +11,7 @@ export FLINK_VERSION_DETAIL=0.10.1
 export HADOOP_FOR_FLINK_VERSION=26
 export SCALA_FOR_FLINK_VERSION=2.11
 
-export JAVA_HOME=/usr/lib/jvm/java-${JDK_VERSION}-oracle
+export JAVA_HOME=/usr
 export PATH=$PATH:$JAVA_HOME/bin
 
 export SCALA_HOME=$HOME/local/scala
