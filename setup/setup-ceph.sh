@@ -39,15 +39,6 @@ ceph-deploy forgetkeys
 ################################################################################
 ### Setup Ceph Nodes
 
-ceph-deploy new ${HOSTS[0]}
-
-# one copy per block
-echo "osd pool default size = 1" >> ceph.conf
-
-ceph-deploy install ${HOSTS[@]}
-
-ceph-deploy mon create-initial
-
 ceph-deploy osd prepare --zap-disk ${HOSTS[0]}:/dev/xvdb
 ceph-deploy osd prepare --zap-disk ${HOSTS[1]}:/dev/xvdb
 ceph-deploy osd activate ${HOSTS[0]}:/dev/xvdb1
@@ -62,12 +53,4 @@ ceph health
 ################################################################################
 ### Setup Nodes as Ceph FS Clients
 
-ceph-deploy mds create ${HOSTS[0]}
-
-ceph osd pool create cephfs_data 128
-ceph osd pool create cephfs_metadata 128
-
-ceph fs new fs0 cephfs_metadata cephfs_data
-
-sudo mkdir /ceph0
 sudo mount -t ceph ${HOSTS[0]}:6789:/ /ceph0 -o name=admin,secret=AQDU8NFW2uhKAxAAGosvZaWW593FtFuBM1/dQQ==

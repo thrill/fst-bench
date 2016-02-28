@@ -26,7 +26,7 @@ We select a `m4.xlarge` on-demand EC2 instance for the control box, and `i2.xlar
 
 ### Setup of the Test Cluster
 
-Launch a control box.
+Launch a control box. We start with the current standard Ubuntu LTS image.
 ```
 aws ec2 run-instances --image-id ami-f95ef58a \
       --key-name rsa.tb2 --instance-type m4.xlarge \
@@ -35,6 +35,21 @@ aws ec2 run-instances --image-id ami-f95ef58a \
       --enable-api-termination \
       --ebs-optimized
 ```
+
+Log into the box and run the following setup script:
+```
+wget https://raw.githubusercontent.com/thrill/thrill-bench/master/setup-ec2/setup-control.sh
+./setup-control.sh
+```
+
+Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
+```
+aws ec2 request-spot-instances \
+      --spot-price "0.20" --instance-count 2 \
+      --type "one-time" \
+      --launch-specification '{"ImageId": "ami-f95ef58a","InstanceType": "i2.xlarge"}'
+```
+
 
 # Original HiBench Suite README #
 ## The bigdata micro benchmark suite ##
