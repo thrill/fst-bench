@@ -106,25 +106,12 @@
     </build>
 
     <modules>
-        <module>nutchindexing</module>
-        <module>mahout</module>
-        <module>hivebench</module>
         <module>sparkbench</module>
-        <module>pegasus</module>
+        <module>flinkbench</module>
         <module>autogen</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>MR1</id>
-            <properties>
-                <sparkbench.mr.version>1</sparkbench.mr.version>
-            </properties>
-            <activation>
-                <property><name>MR1</name></property>
-            </activation>
-        </profile>
-
         <profile>
             <id>MR2</id>
             <build>
@@ -137,62 +124,6 @@
             </activation>
         </profile>
 
-        <profile>
-            <id>spark1.2</id>
-            <properties>
-                <spark.version>1.2.1</spark.version>
-                <spark.bin.version>1.2</spark.bin.version>
-            </properties>
-            <activation>
-                <property><name>spark1.2</name></property>
-            </activation>
-        </profile>
-
-        <profile>
-            <id>spark1.3</id>
-            <properties>
-                <env>spark1.3</env>
-                <spark.version>1.3.0</spark.version>
-                <spark.bin.version>1.3</spark.bin.version>
-            </properties>
-            <activation>
-                <property><name>spark1.3</name></property>
-            </activation>
-	    <modules>
-	      <module>streambench</module>
-	    </modules>
-
-        </profile>
-        <profile>
-            <id>spark1.4</id>
-            <properties>
-                <env>spark1.4</env>
-                <spark.version>1.4.0</spark.version>
-                <spark.bin.version>1.4</spark.bin.version>
-            </properties>
-            <activation>
-                <property><name>spark1.4</name></property>
-            </activation>
-	    <modules>
-	      <module>streambench</module>
-	    </modules>
-
-        </profile>
-	<profile>
-            <id>spark1.5</id>
-            <properties>
-                <env>spark1.5</env>
-                <spark.version>1.5.0</spark.version>
-                <spark.bin.version>1.5</spark.bin.version>
-            </properties>
-            <activation>
-                <property><name>spark1.5</name></property>
-            </activation>
-	    <modules>
-	      <module>streambench</module>
-	    </modules>
-
-        </profile>
 	<profile>
             <id>spark1.6</id>
             <properties>
@@ -203,9 +134,6 @@
             <activation>
                 <property><name>!spark1.6</name></property>
             </activation>
-	    <modules>
-	      <module>streambench</module>
-	    </modules>
 
         </profile>
     </profiles>
