@@ -14,5 +14,6 @@ LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
 
 sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}
+sudo chmod a+w /ceph0
 
 ################################################################################

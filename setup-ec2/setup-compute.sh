@@ -21,7 +21,7 @@ SSHTOBOX="ssh -o BatchMode=yes -o StrictHostKeyChecking=no $BOX"
 PUBKEY=$(cat ~/.ssh/id_rsa.pub)
 $SSHTOBOX "grep -c '$PUBKEY' ~/.ssh/authorized_keys || echo '$PUBKEY' >> ~/.ssh/authorized_keys; sudo true"
 if [ ! $? ]; then
-    echo "This script MUST be also to ssh sudo" 1>&2
+    echo "This script MUST be able to ssh sudo to $BOX" 1>&2
     exit 1
 fi
 unset PUBKEY
@@ -70,6 +70,8 @@ $SSHTOBOX "sudo mount $LOCALIP:/home /home"
 
 ################################################################################
 # Save $BOX in ~/boxes.txt for running benchmarks
+
+$SSHTOBOX "df"
 
 grep -F "$BOX" -c ~/boxes.txt || echo "$BOX" >> ~/boxes.txt
 
