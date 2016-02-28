@@ -1,4 +1,42 @@
-# HiBench Suite #
+# Thrill Benchmarks Suite #
+
+This repository and the benchmark suite is derived from [HiBench](https://github.com/intel-hadoop/HiBench). It is extended to benchmark Thrill and Apache Flink, and contains scripts to run the benchmarks on Amazon's EC2 Cloud and on SLURM-operated HPC systems.
+
+## Running on Amazon's EC2 Cloud
+
+To run benchmarks on Amazon's EC2 Cloud we pull up the following test cluster using scripts in `setup-ec2/`.
+
+```
++-------------+        +-----------+
+| Control Box |---+--->| Compute 1 |
++-------------+   |    +-----------+
+                  |
+                  |    +-----------+
+                  +--->| Compute 2 |
+                  |    +-----------+
+                  |
+                  |    ... more ...
+```
+
+The control box hosts a NFS server, which is exported to the compute nodes as `/home/`. The NFS volume contains all sources, report logs, etc, but no compute data.
+
+Additionally, we setup a ceph distributed file system using the compute machines' ephemeral local disks to store "Big Data". The control box contains only the central ceph services like the metadata server, while the compute nodes are the ODS nodes. The ceph DFS is mounted to `/ceph0/` on all boxes.
+
+We select a `m4.xlarge` on-demand EC2 instance for the control box, and `i2.xlarge` spot instances for the compute nodes.
+
+### Setup of the Test Cluster
+
+Launch a control box.
+```
+aws ec2 run-instances --image-id ami-f95ef58a \
+      --key-name rsa.tb2 --instance-type m4.xlarge \
+      --security-groups default \
+      --placement "GroupName=cluster" \
+      --enable-api-termination \
+      --ebs-optimized
+```
+
+# Original HiBench Suite README #
 ## The bigdata micro benchmark suite ##
 
 
