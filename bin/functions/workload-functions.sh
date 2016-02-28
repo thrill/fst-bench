@@ -259,7 +259,7 @@ function run-thrill-job() {
         SUBMIT_CMD="${THRILL_HOME}/run/slurm/invoke.sh '${THRILL_HOME}/${THRILL_EXEC}' $@"
         echo ${SUBMIT_CMD}
     elif [ -n "${SLAVES:-}" ]; then
-        SUBMIT_CMD="${THRILL_HOME}/run/ssh/invoke.sh -c -h '$SLAVES' '${THRILL_HOME}/${THRILL_EXEC}' $@"
+        SUBMIT_CMD="${THRILL_HOME}/run/ssh/invoke.sh -h '$SLAVES' '${THRILL_HOME}/${THRILL_EXEC}' $@"
         echo ${SUBMIT_CMD}
     else
         echo "Thrill jobs requires either SLAVES as hostlist or SLURM_JOB_NODELIST"
