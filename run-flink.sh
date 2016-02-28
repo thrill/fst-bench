@@ -12,7 +12,7 @@ PROCZERO=${BASH_REMATCH[1]}
 # start Flink's JobManager
 if [ "$SLURM_PROCID" == 0 ]; then
     $FLINK_HOME/bin/jobmanager.sh stop cluster batch || true
-    echo "Starting Spark Master on $(hostname)"
+    echo "Starting Flink Master on $(hostname)"
     $FLINK_HOME/bin/jobmanager.sh start cluster batch 172.26.20.1
 else
     sleep 2s
