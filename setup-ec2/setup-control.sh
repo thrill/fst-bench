@@ -36,9 +36,14 @@ cd ~/thrill-bench/setup/
 ./setup-user.sh
 
 ################################################################################
+# Generate ssh key to log into compute boxes
+
+ssh-keygen -f ~/.ssh/id_rsa -t rsa -b 2048 -N ''
+
+################################################################################
 # Setup control box as NFS server
 
-sudo apt-get install nfs-kernel-server ipcalc
+sudo apt-get install -y nfs-kernel-server ipcalc
 LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 LOCALMASK=$(ifconfig eth0 | awk '/ Mask:/ { print $4 }' | cut -d ':' -f 2)
 LOCALCIDR=$(ipcalc $LOCALIP $LOCALMASK | awk '/Network: / { print $2 }')
@@ -95,18 +100,12 @@ ceph health
 
 ceph-deploy mds create $(hostname)
 
-ceph osd pool create cephfs_data 128
-ceph osd pool create cephfs_metadata 128
+ceph osd pool create cephfs_data 32
+ceph osd pool create cephfs_metadata 32
 
 ceph fs new fs0 cephfs_metadata cephfs_data
 
-sudo mkdir /ceph0
-
-LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
-ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
-
-sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}
+# mount
+echo "Cannot mount /ceph0 immediately, add a compute node first."
 
 ################################################################################
-
-cd ~/thrill-bench/setup/

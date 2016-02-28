@@ -60,6 +60,11 @@ sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt-get update
 sudo apt-get install -y g++-5
 
+# install newer git from ppa:git-core/candidate PPA
+sudo add-apt-repository -y ppa:git-core/candidate
+sudo apt-get update
+sudo apt-get install -y git
+
 # remove docker.io which is on the Ubuntu by default
 sudo dpkg -P docker.io || true
 
