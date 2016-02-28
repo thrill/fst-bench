@@ -56,15 +56,6 @@ sudo exportfs -av
 sudo service nfs-kernel-server start
 
 ################################################################################
-# Build Thrill on the control box
-
-cd ~
-[ -e thrill ] || git clone https://github.com/thrill/thrill.git
-
-cd ~/thrill
-[ -e build ] || ./compile.sh -DCMAKE_BUILD_TYPE=Release
-
-################################################################################
 # Install ceph's Cluster Monitor and MDS on the control box
 
 # install ceph packages
@@ -110,5 +101,31 @@ ceph fs new fs0 cephfs_metadata cephfs_data
 
 # mount
 echo "Cannot mount /ceph0 immediately, add a compute node first."
+
+################################################################################
+# setup environment hook
+
+echo "source ~/thrill-bench/setup/env.sh" >> ~/.bashrc
+echo "export WORK=/ceph0" >> ~/.bashrc
+
+################################################################################
+# Build Thrill on the control box
+
+cd ~
+[ -e thrill ] || git clone https://github.com/thrill/thrill.git
+
+cd ~/thrill
+[ -e build ] || ./compile.sh -DCMAKE_BUILD_TYPE=Release
+
+################################################################################
+# Build HiBench java things on the control box
+
+sudo apt-get purge -y maven maven2 maven3
+sudo apt-add-repository -y ppa:andrei-pozolotin/maven3
+sudo apt-get update
+sudo apt-get install -y maven3
+
+cd ~/thrill-bench/src/
+mvn package
 
 ################################################################################

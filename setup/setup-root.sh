@@ -32,7 +32,7 @@ sudo apt-get -y dist-upgrade
 sudo apt-get install -y build-essential
 sudo apt-get install -y software-properties-common
 sudo apt-get install -y wget curl man unzip vim-tiny bc git
-sudo apt-get install -y bmon gdb htop
+sudo apt-get install -y bmon gdb htop parallel mc
 
 # compilers and basic tools
 sudo apt-get install -y make gcc cmake
