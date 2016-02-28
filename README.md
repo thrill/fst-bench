@@ -29,27 +29,34 @@ We select a `m4.xlarge` on-demand EC2 instance for the control box, and `i2.xlar
 Launch a control box. We start with the current standard Ubuntu LTS image.
 ```
 aws ec2 run-instances --image-id ami-f95ef58a \
-      --key-name rsa.tb2 --instance-type m4.xlarge \
-      --security-groups default \
-      --placement "GroupName=cluster" \
-      --enable-api-termination \
-      --ebs-optimized
+  --key-name rsa.tb2 --instance-type m4.xlarge \
+  --security-groups default \
+  --placement "AvailabilityZone=eu-west-1b,GroupName=cluster" \
+  --enable-api-termination \
+  --ebs-optimized
 ```
 
 Log into the box and run the following setup script:
 ```
 wget https://raw.githubusercontent.com/thrill/thrill-bench/master/setup-ec2/setup-control.sh
+chmod +x setup-control.sh
 ./setup-control.sh
 ```
 
 Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
 ```
 aws ec2 request-spot-instances \
-      --spot-price "0.20" --instance-count 2 \
-      --type "one-time" \
-      --launch-specification '{"ImageId": "ami-f95ef58a","InstanceType": "i2.xlarge"}'
+  --spot-price "0.20" --instance-count 2 \
+  --type "one-time" \
+  --launch-specification \
+  '{"ImageId": "ami-f95ef58a","InstanceType": "i2.xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1b", "GroupName": "cluster"}, "EbsOptimized": true }'
 ```
 
+For each compute box, run the following setup:
+```
+cd ~/thrill-bench/setup-ec2/
+./setup-compute.sh $BOXIP
+```
 
 # Original HiBench Suite README #
 ## The bigdata micro benchmark suite ##

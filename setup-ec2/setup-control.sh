@@ -24,6 +24,9 @@ DIR=`dirname "$0"`
 ################################################################################
 # Clone thrill-bench on the control box
 
+sudo apt-get update
+sudo apt-get install -y git
+
 cd ~
 [ -e thrill-bench ] || git clone https://github.com/thrill/thrill-bench.git
 
