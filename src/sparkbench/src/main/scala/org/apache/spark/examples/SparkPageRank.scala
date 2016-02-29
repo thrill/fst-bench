@@ -49,13 +49,12 @@ object SparkPageRank {
     val iters = if (args.length > 2) args(2).toInt else 10
     val ctx = new SparkContext(sparkConf)
 
-//  Modified by Lv: accept last two values from HiBench generated PageRank data format
     val lines = ctx.textFile(input_path, 1)
     val links = lines.map{ s =>
       val elements = s.split("\\s+")
       val parts = elements.slice(elements.length - 2, elements.length)
-      (parts(0), parts(1))
-    }.distinct().groupByKey().cache()
+      (parts(0).toInt, parts(1).toInt)
+    }.groupByKey().cache()
     var ranks = links.mapValues(v => 1.0)
     val numPages = ranks.count()
 
