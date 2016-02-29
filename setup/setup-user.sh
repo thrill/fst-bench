@@ -10,7 +10,7 @@ fi
 
 DIR=`dirname "$0"`
 
-source $DIR/user-env.sh
+source $DIR/env.sh
 
 mkdir -p ~/local/
 

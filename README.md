@@ -33,12 +33,13 @@ aws ec2 run-instances --image-id ami-f95ef58a \
   --security-groups default \
   --placement "AvailabilityZone=eu-west-1b,GroupName=cluster" \
   --enable-api-termination \
+  --block-device-mappings '{ "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 20, "DeleteOnTermination": true, "VolumeType": "gp2" } }' \
   --ebs-optimized
 ```
 
 Log into the box and run the following setup script:
 ```
-wget https://raw.githubusercontent.com/thrill/thrill-bench/master/setup-ec2/setup-control.sh
+wget https://raw.githubusercontent.com/thrill/fst-bench/master/setup-ec2/setup-control.sh
 chmod +x setup-control.sh
 ./setup-control.sh
 ```
@@ -54,7 +55,7 @@ aws ec2 request-spot-instances \
 
 For each compute box, run the following setup:
 ```
-cd ~/thrill-bench/setup-ec2/
+cd ~/fst-bench/setup-ec2/
 ./setup-compute.sh $BOXIP
 ```
 

@@ -27,7 +27,7 @@ fi
 unset PUBKEY
 
 # Install many more packages for a useful basic system (same as control box)
-$SSHTOBOX 'bash' < ~/thrill-bench/setup/setup-root.sh
+$SSHTOBOX 'bash' < ~/fst-bench/setup/setup-root.sh
 
 ################################################################################
 # Setup compute node as Ceph Storage Device

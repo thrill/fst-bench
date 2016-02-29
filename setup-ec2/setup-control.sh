@@ -22,15 +22,15 @@ fi
 DIR=`dirname "$0"`
 
 ################################################################################
-# Clone thrill-bench on the control box
+# Clone fst-bench on the control box
 
 sudo apt-get update
 sudo apt-get install -y git
 
 cd ~
-[ -e thrill-bench ] || git clone https://github.com/thrill/thrill-bench.git
+[ -e fst-bench ] || git clone https://github.com/thrill/fst-bench.git
 
-cd ~/thrill-bench/setup/
+cd ~/fst-bench/setup/
 
 # Install many more packages for a useful basic system
 ./setup-root.sh
@@ -105,7 +105,7 @@ echo "Cannot mount /ceph0 immediately, add a compute node first."
 ################################################################################
 # setup environment hook
 
-echo "source ~/thrill-bench/setup/env.sh" >> ~/.bashrc
+echo "source ~/fst-bench/setup/env.sh" >> ~/.bashrc
 echo "export WORK=/ceph0" >> ~/.bashrc
 
 ################################################################################
@@ -125,7 +125,7 @@ sudo apt-add-repository -y ppa:andrei-pozolotin/maven3
 sudo apt-get update
 sudo apt-get install -y maven3
 
-cd ~/thrill-bench/src/
+cd ~/fst-bench/src/
 mvn package
 
 ################################################################################
