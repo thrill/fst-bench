@@ -33,7 +33,6 @@ HiBenchEnvPropMappingMandatory=dict(
     HIBENCH_CONF="hibench.configure.dir", 
 
     DEPENDENCY_DIR="hibench.dependency.dir",
-    REPORT_COLUMN_FORMATS="hibench.report.formats",
     SPARKBENCH_JAR="hibench.sparkbench.jar",
     FLINKBENCH_JAR="hibench.flinkbench.jar",
     HIBENCH_PYTHON_PATH="hibench.sparkbench.python.dir",

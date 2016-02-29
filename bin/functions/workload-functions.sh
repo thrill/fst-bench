@@ -75,37 +75,25 @@ function stop-monitor(){
     kill ${MONITOR_PID}
 }
 
-function get_field_name() {	# print report column header
-    printf "${REPORT_COLUMN_FORMATS}" Type Date Time Input_data_size "Duration(s)" "Throughput(bytes/s)" Throughput/node 
-}
-
 function gen_report() {		# dump the result to report file
     assert ${HIBENCH_CUR_WORKLOAD_NAME} "HIBENCH_CUR_WORKLOAD_NAME not specified."
     local start=$1
     local end=$2
-    local size=$3
+    local appendix=$3
     which bc > /dev/null 2>&1
     if [ $? -eq 1 ]; then
 	assert 0 "\"bc\" utility missing. Please install it to generate proper report."
         return 1
     fi
     local duration=$(echo "scale=3;($end-$start)/1000"|bc)
-    local tput=`echo "$size/$duration"|bc`
-#    local nodes=`cat ${SPARK_HOME}/conf/slaves 2>/dev/null | grep -v '^\s*$' | sed "/^#/ d" | wc -l`
     local nodes=`echo ${SLAVES} | wc -w`
     nodes=${nodes:-1}
     
     if [ $nodes -eq 0 ]; then nodes=1; fi
-    local tput_node=`echo "$tput/$nodes"|bc`
 
-    REPORT_TITLE=`get_field_name`
-    if [ ! -f ${HIBENCH_REPORT}/${HIBENCH_REPORT_NAME} ] ; then
-        echo "${REPORT_TITLE}" > ${HIBENCH_REPORT}/${HIBENCH_REPORT_NAME}
-    fi
+    REPORT_LINE="RESULT date=$(date +%FT%T) workload=${HIBENCH_CUR_WORKLOAD_NAME} nodes=$nodes duration=$duration $appendix"
 
-    REPORT_LINE=$(printf "${REPORT_COLUMN_FORMATS}" ${HIBENCH_CUR_WORKLOAD_NAME} $(date +%F) $(date +%T) $size $duration $tput $tput_node)
     echo "${REPORT_LINE}" >> ${HIBENCH_REPORT}/${HIBENCH_REPORT_NAME}
-    echo "# ${REPORT_TITLE}" >> ${HIBENCH_WORKLOAD_CONF}
     echo "# ${REPORT_LINE}" >> ${HIBENCH_WORKLOAD_CONF}
 }
 
