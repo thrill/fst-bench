@@ -109,6 +109,7 @@
         <module>sparkbench</module>
         <module>flinkbench</module>
         <module>autogen</module>
+        <module>mahout</module>
     </modules>
 
     <profiles>
