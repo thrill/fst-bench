@@ -487,7 +487,11 @@ def generate_optional_value():  # get some critical values from environment or m
 def export_config(workload_name, workload_tail):
     join = os.path.join
     report_dir = HibenchConf['hibench.report.dir']
-    conf_dir = join(report_dir, workload_name, workload_tail, 'conf')
+    conf_dir = join(
+        report_dir, workload_name,
+        "scale=" + HibenchConf['hibench.scale.profile'] + "," +
+        "hosts=" + str(len(HibenchConf['hibench.slaves.hostnames'].split())),
+        workload_tail, 'conf')
     conf_filename= join(conf_dir, "%s.conf" % workload_name)
 
     spark_conf_dir = join(conf_dir, "sparkbench")
