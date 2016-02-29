@@ -43,15 +43,34 @@ ceph-deploy install $BOX
 DISKS=$($SSHTOBOX ls /dev/xvd[b-z])
 echo "Disks on compute node: $DISKS"
 
+i=0
 for disk in $DISKS; do
-    ceph-deploy osd prepare --zap-disk $BOX:$disk
+    # partition disk: one partition
+    $SSHTOBOX "sudo parted -s -a optimal $disk print" || true
+    sleep 2s
+    $SSHTOBOX "sudo parted -s -a optimal $disk mklabel gpt"
+    sleep 2s
+    $SSHTOBOX "sudo parted -s -a optimal $disk mkpart primary xfs 0% 100%"
+    sleep 2s
+    $SSHTOBOX "sudo parted -s -a optimal $disk print"
+    sleep 2s
+    $SSHTOBOX "sudo partx $disk && sudo mkfs.xfs ${disk}1" || true
+    $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk}1 /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
+    $SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && chmod a+wt /tmp/"
+
+    ceph-deploy osd prepare $BOX:/data$i/ceph/
+
+    i=$(($i+1))
 done
 
 # copy admin files
 ceph-deploy admin $BOX
 
+i=0
 for disk in $DISKS; do
-    ceph-deploy osd activate $BOX:${disk}1
+    $SSHTOBOX "sudo chown ceph:ceph -R /data$i/ceph"
+    ceph-deploy osd activate $BOX:/data$i/ceph/
+    i=$(($i+1))
 done
 
 # mount ceph file system

@@ -120,7 +120,7 @@ cd ~/thrill
 ################################################################################
 # Build HiBench java things on the control box
 
-sudo apt-get purge -y maven maven2 maven3
+sudo apt-get dpkg -P maven maven2 maven3
 sudo apt-add-repository -y ppa:andrei-pozolotin/maven3
 sudo apt-get update
 sudo apt-get install -y maven3
