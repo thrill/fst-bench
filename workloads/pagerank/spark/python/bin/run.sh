@@ -29,7 +29,7 @@ START_TIME=`timestamp`
 run-spark-job ${HIBENCH_PYTHON_PATH}/pagerank.py $INPUT_HDFS/edges $OUTPUT_HDFS $NUM_ITERATIONS
 END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench
 

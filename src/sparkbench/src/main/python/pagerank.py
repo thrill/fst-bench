@@ -59,7 +59,7 @@ if __name__ == "__main__":
     lines = sc.textFile(sys.argv[1], 1)
 
     # Loads all URLs from input file and initialize their neighbors.
-    links = lines.map(lambda urls: parseNeighbors(urls)).distinct().groupByKey().cache()
+    links = lines.map(lambda urls: parseNeighbors(urls)).groupByKey().cache()
 
     # Loads all URLs with other URL(s) link to from input file and initialize ranks of them to one.
     ranks = links.map(lambda (url, neighbors): (url, 1.0))

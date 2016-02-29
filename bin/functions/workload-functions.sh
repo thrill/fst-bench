@@ -79,19 +79,19 @@ function gen_report() {		# dump the result to report file
     assert ${HIBENCH_CUR_WORKLOAD_NAME} "HIBENCH_CUR_WORKLOAD_NAME not specified."
     local start=$1
     local end=$2
-    local appendix=$3
+    shift 2
     which bc > /dev/null 2>&1
     if [ $? -eq 1 ]; then
 	assert 0 "\"bc\" utility missing. Please install it to generate proper report."
         return 1
     fi
-    local duration=$(echo "scale=3;($end-$start)/1000"|bc)
+    local duration=$(echo "scale=3;($end-$start)/1000" | bc)
     local nodes=`echo ${SLAVES} | wc -w`
     nodes=${nodes:-1}
     
     if [ $nodes -eq 0 ]; then nodes=1; fi
 
-    REPORT_LINE="RESULT date=$(date +%FT%T) workload=${HIBENCH_CUR_WORKLOAD_NAME} nodes=$nodes duration=$duration $appendix"
+    REPORT_LINE="RESULT date=$(date +%FT%T) workload=${HIBENCH_CUR_WORKLOAD_NAME} nodes=$nodes scale=$SCALE duration=$duration $@"
 
     echo "${REPORT_LINE}" >> ${HIBENCH_REPORT}/${HIBENCH_REPORT_NAME}
     echo "# ${REPORT_LINE}" >> ${HIBENCH_WORKLOAD_CONF}

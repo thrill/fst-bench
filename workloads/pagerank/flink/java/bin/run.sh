@@ -31,7 +31,7 @@ run-flink-job com.intel.flinkbench.JavaPageRankBasic ${PAGES} $INPUT_HDFS/edges 
 
 END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench
 

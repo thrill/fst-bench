@@ -30,6 +30,6 @@ START_TIME=`timestamp`
 run-thrill-job build/examples/word_count/word_count_run --fast_string --output "$OUTPUT_HDFS/output" "$INPUT_HDFS/*"
 END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench

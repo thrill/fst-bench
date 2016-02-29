@@ -37,7 +37,7 @@ START_TIME=`timestamp`
 OUT=${INPUT_HDFS##file://}
 
 mkdir -p "$OUT"
-$HOME/thrill/build/benchmarks/word_count/random_text_writer ${DATASIZE} > ${OUT}/input.txt
+$HOME/thrill/build/examples/word_count/random_text_writer ${DATASIZE} > ${OUT}/input.txt
 
 END_TIME=`timestamp`
 
