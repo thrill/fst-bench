@@ -490,7 +490,8 @@ def export_config(workload_name, workload_tail):
     conf_dir = join(
         report_dir, workload_name,
         "scale=" + HibenchConf['hibench.scale.profile'] + "_" +
-        "hosts=" + str(len(HibenchConf['hibench.slaves.hostnames'].split())),
+        "hosts=" + str(len(HibenchConf['hibench.slaves.hostnames'].split())) + "_" +
+        "run=" + HibenchConf['hibench.run'],
         workload_tail, 'conf')
     conf_filename= join(conf_dir, "%s.conf" % workload_name)
 
