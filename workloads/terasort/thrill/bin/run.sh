@@ -16,23 +16,20 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/..
+workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench HadoopPrepareTerasort ${workload_root} ${workload_folder}
+enter_bench ThrillTerasort ${workload_root} ${workload_folder}
 show_bannar start
 
-rmr-hdfs $INPUT_HDFS || true
+rmr-hdfs $OUTPUT_HDFS || true
+mkdir $OUTPUT_HDFS
+
+SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-hadoop-job ${HADOOP_EXAMPLES_JAR} teragen \
-    -D${MAP_CONFIG_NAME}=${NUM_MAPS} \
-    -D${REDUCER_CONFIG_NAME}=${NUM_REDS} \
-    $((${DATASIZE} / 100)) ${INPUT_HDFS}
+run-thrill-job build/examples/terasort/terasort --output "$OUTPUT_HDFS/output" "$INPUT_HDFS/part-*"
 END_TIME=`timestamp`
 
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench
-
-
-
-
