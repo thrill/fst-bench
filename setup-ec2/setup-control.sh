@@ -99,9 +99,6 @@ ceph osd pool create cephfs_metadata 32
 
 ceph fs new fs0 cephfs_metadata cephfs_data
 
-# mount
-echo "Cannot mount /ceph0 immediately, add a compute node first."
-
 ################################################################################
 # setup environment hook
 
@@ -120,12 +117,17 @@ cd ~/thrill
 ################################################################################
 # Build HiBench java things on the control box
 
-sudo apt-get dpkg -P maven maven2 maven3
+sudo dpkg -P maven maven2 maven3
 sudo apt-add-repository -y ppa:andrei-pozolotin/maven3
 sudo apt-get update
 sudo apt-get install -y maven3
 
 cd ~/fst-bench/src/
 mvn package
+
+################################################################################
+
+# messages
+echo "Cannot mount /ceph0 immediately, add a compute node first."
 
 ################################################################################

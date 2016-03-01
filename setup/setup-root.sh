@@ -64,8 +64,9 @@ sudo apt-get install -y g++-5
 sudo add-apt-repository -y ppa:git-core/candidate
 sudo apt-get update
 sudo apt-get install -y git
+sudo apt-get -y dist-upgrade
 
-# remove docker.io which is on the Ubuntu by default
+# remove docker.io which is on some of the Ubuntu images by default
 sudo dpkg -P docker.io || true
 
 # cleanup

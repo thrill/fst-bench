@@ -43,6 +43,9 @@ wget https://raw.githubusercontent.com/thrill/fst-bench/master/setup-ec2/setup-c
 chmod +x setup-control.sh
 ./setup-control.sh
 ```
+The script will first install lots of additional useful packages, then setup the control box as an NFS server and as ceph Monitor and MDS. If the script breaks at some point, please check and continue by manually copy and pasting. The amount of things that can go wrong due to some small change in the dependencies is large, often it is just a single additional keystroke needed.
+
+After running the script, reboot the box to load the newest kernel.
 
 Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
 ```
@@ -53,7 +56,7 @@ aws ec2 request-spot-instances \
   '{"ImageId": "ami-f95ef58a","InstanceType": "i2.xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1b", "GroupName": "cluster"}, "EbsOptimized": true }'
 ```
 
-For each compute box, run the following setup:
+For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.
 ```
 cd ~/fst-bench/setup-ec2/
 ./setup-compute.sh $BOXIP

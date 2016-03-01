@@ -56,7 +56,7 @@ for disk in $DISKS; do
     sleep 2s
     $SSHTOBOX "sudo partx $disk && sudo mkfs.xfs ${disk}1" || true
     $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk}1 /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
-    $SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && chmod a+wt /tmp/"
+    $SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && sudo chmod a+wt /tmp/"
 
     ceph-deploy osd prepare $BOX:/data$i/ceph/
 
