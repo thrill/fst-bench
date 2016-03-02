@@ -48,6 +48,7 @@ public final class JavaWordCount {
 
     SparkConf sparkConf = new SparkConf().setAppName("JavaWordCount");
     JavaSparkContext ctx = new JavaSparkContext(sparkConf);
+    ctx.hadoopConfiguration().setLong("fs.local.block.size", 128 * 1024 * 1024);
     JavaRDD<String> lines = ctx.textFile(args[0], 1);
 
     JavaRDD<String> words = lines.flatMap(new FlatMapFunction<String, String>() {

@@ -34,6 +34,7 @@ object ScalaWordCount{
     }
     val sparkConf = new SparkConf().setAppName("ScalaWordCount")
     val sc = new SparkContext(sparkConf)
+    sc.hadoopConfiguration.setLong("fs.local.block.size", 128 * 1024 * 1024);
 
     val data = sc.textFile(args(0))
     val counts = data.flatMap(line => line.split(" "))
