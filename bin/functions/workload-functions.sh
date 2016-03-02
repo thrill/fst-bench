@@ -208,10 +208,10 @@ function check_compress() {
 }
 
 function run-flink-job() {
-    LIB_JARS=
+    LIB_JAR=${FLINKBENCH_JAR}
     while (($#)); do
       if [ "$1" = "--jars" ]; then
-        LIB_JARS="--jars $2"
+        LIB_JAR="$2"
         shift 2
         continue
       fi
@@ -223,7 +223,7 @@ function run-flink-job() {
     CLS=$1
     shift
 
-    SUBMIT_CMD="${FLINK_HOME}/bin/flink run --class $CLS ${LIB_JARS} ${FLINKBENCH_JAR} $@"
+    SUBMIT_CMD="${FLINK_HOME}/bin/flink run --class $CLS ${LIB_JAR} $@"
 
     echo -e "${BGreen}Submit Flink job: ${Green}${SUBMIT_CMD}${Color_Off}"
     MONITOR_PID=`start-monitor`

@@ -23,6 +23,12 @@ under the License.
 
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.intel.hibench</groupId>
+    <artifactId>hibench</artifactId>
+    <version>5.0-SNAPSHOT</version>
+  </parent>
+
   <groupId>com.intel.flinkbench</groupId>
   <artifactId>flinkbench</artifactId>
   <version>5.0-SNAPSHOT</version>
@@ -30,11 +36,6 @@ under the License.
 
   <name>Flinkbench</name>
   <url>https://github.com/thrill/HiBench</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <flink.version>0.10.1</flink.version>
-  </properties>
 
   <repositories>
     <repository>

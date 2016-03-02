@@ -19,14 +19,14 @@ workload_folder=`cd "$workload_folder"; pwd`
 workload_root=${workload_folder}/../../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench ScalaSparkTerasortEastcircle ${workload_root} ${workload_folder}
+enter_bench ScalaFlinkTerasortEastcircle ${workload_root} ${workload_folder}
 show_bannar start
 
 rmr-hdfs $OUTPUT_HDFS || true
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-spark-job --jars ${HIBENCH_HOME}/src/terasort-eastcircle/target/terasort-eastcircle-5.0-SNAPSHOT.jar eastcircle.terasort.SparkTeraSort "file:///" $INPUT_HDFS $OUTPUT_HDFS 4
+run-flink-job --jars ${HIBENCH_HOME}/src/terasort-eastcircle/target/terasort-eastcircle-5.0-SNAPSHOT.jar eastcircle.terasort.FlinkTeraSort "file:///" $INPUT_HDFS $OUTPUT_HDFS 4
 END_TIME=`timestamp`
 
 gen_report ${START_TIME} ${END_TIME} ${SIZE}

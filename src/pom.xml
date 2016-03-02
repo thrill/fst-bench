@@ -32,6 +32,7 @@
 	<jetty.version>8.1.14.v20131031</jetty.version>
 	<scalatest.version>2.2.1</scalatest.version>
 	<scalacheck.version>1.11.3</scalacheck.version>
+        <flink.version>0.10.2</flink.version>
     </properties>
 
     <repositories>
@@ -111,6 +112,7 @@
         <module>autogen</module>
         <module>mahout</module>
         <module>pegasus</module>
+        <module>terasort-eastcircle</module>
     </modules>
 
     <profiles>
