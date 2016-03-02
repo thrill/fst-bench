@@ -42,6 +42,7 @@ cd ~/fst-bench/setup/
 # Generate ssh key to log into compute boxes
 
 ssh-keygen -f ~/.ssh/id_rsa -t rsa -b 2048 -N ''
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 
 ################################################################################
 # Setup control box as NFS server
@@ -124,6 +125,8 @@ sudo apt-get install -y maven3
 
 cd ~/fst-bench/src/
 mvn package
+
+mkdir ~/fst-bench/report/spark-eventlog/
 
 ################################################################################
 

@@ -91,7 +91,7 @@ function gen_report() {		# dump the result to report file
     
     if [ $nodes -eq 0 ]; then nodes=1; fi
 
-    REPORT_LINE="RESULT date=$(date +%FT%T) workload=${HIBENCH_CUR_WORKLOAD_NAME} nodes=$nodes scale=$SCALE duration=$duration $@"
+    REPORT_LINE="RESULT date=$(date +%FT%T) workload=${HIBENCH_CUR_WORKLOAD_NAME} nodes=$nodes scale=$SCALE run=$RUN duration=$duration $@"
 
     echo "${REPORT_LINE}" >> ${HIBENCH_REPORT}/${HIBENCH_REPORT_NAME}
     echo "# ${REPORT_LINE}" >> ${HIBENCH_WORKLOAD_CONF}

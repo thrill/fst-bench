@@ -80,6 +80,7 @@ ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
 
 $SSHTOBOX "sudo mkdir /ceph0"
 $SSHTOBOX "sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}"
+$SSHTOBOX "sudo chmod a+w /ceph0/"
 
 ################################################################################
 # mount NFS on compute box (overrides /home)
