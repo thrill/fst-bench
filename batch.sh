@@ -2,6 +2,8 @@
 
 set -e
 
+TERASORT_RANGE=$(seq 30 36)
+
 wc_prepare() {
     for scale in {20..37}; do
         SCALE=$scale ./workloads/wordcount/prepare/prepare.sh
@@ -9,13 +11,15 @@ wc_prepare() {
 }
 
 pr_prepare() {
-    for scale in {21..25}; do
+    [ -z $RANGE ] && RANGE=$(seq 15 24)
+    for scale in $RANGE; do
         SCALE=$scale ./workloads/pagerank/prepare/prepare.sh
     done
 }
 
-ts_prepare() {
-    for scale in {31..36}; do
+terasort_prepare() {
+    [ -z $RANGE ] && RANGE=$(seq 30 36)
+    for scale in $RANGE; do
         SCALE=$scale ./workloads/terasort/prepare/prepare.sh
     done
 }
@@ -42,6 +46,24 @@ wc_flink() {
             else
                 SCALE=$scale RUN=$run ./workloads/wordcount/flink/scala/bin/run.sh
             fi
+        done
+    done
+}
+
+terasort_spark() {
+    [ -z $RANGE ] && RANGE=$TERASORT_RANGE
+    for scale in $RANGE; do
+        for run in {1..3}; do
+            SCALE=$scale RUN=$run ./workloads/terasort/spark/scala/bin/run.sh
+        done
+    done
+}
+
+terasort_flink() {
+    [ -z $RANGE ] && RANGE=$TERASORT_RANGE
+    for scale in $RANGE; do
+        for run in {1..3}; do
+            SCALE=$scale RUN=$run ./workloads/terasort/flink/scala/bin/run.sh
         done
     done
 }
