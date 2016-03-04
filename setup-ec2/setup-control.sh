@@ -126,7 +126,7 @@ sudo apt-get install -y maven3
 cd ~/fst-bench/src/
 mvn package
 
-mkdir ~/fst-bench/report/spark-eventlog/
+mkdir -p ~/fst-bench/report/spark-eventlog/
 
 ################################################################################
 

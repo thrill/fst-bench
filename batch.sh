@@ -68,6 +68,15 @@ terasort_flink() {
     done
 }
 
+terasort_thrill() {
+    [ -z $RANGE ] && RANGE=$TERASORT_RANGE
+    for scale in $RANGE; do
+        for run in {1..3}; do
+            SCALE=$scale RUN=$run ./workloads/terasort/thrill/bin/run.sh
+        done
+    done
+}
+
 for p in $@; do
     $p
 done

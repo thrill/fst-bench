@@ -78,7 +78,7 @@ done
 LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
 
-$SSHTOBOX "sudo mkdir /ceph0"
+$SSHTOBOX "sudo mkdir /ceph0 || true"
 $SSHTOBOX "sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}"
 $SSHTOBOX "sudo chmod a+w /ceph0/"
 

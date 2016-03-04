@@ -35,7 +35,7 @@ sudo apt-get install -y wget curl man unzip vim-tiny bc git
 sudo apt-get install -y bmon gdb htop parallel mc
 
 # compilers and basic tools
-sudo apt-get install -y make gcc cmake cmake-curses-gui
+sudo apt-get install -y make gcc cmake cmake-curses-gui global
 
 # python
 sudo apt-get install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-dev
