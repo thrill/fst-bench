@@ -88,10 +88,19 @@ pagerank_flink() {
     for scale in $RANGE; do
         for run in {1..3}; do
             if [ $((scale % 2)) == 0 ]; then
-                : # SCALE=$scale RUN=$run ./workloads/pagerank/flink/java/bin/run.sh
+                SCALE=$scale RUN=$run ./workloads/pagerank/flink/java/bin/run.sh
             else
                 SCALE=$scale RUN=$run ./workloads/pagerank/flink/scala/bin/run.sh
             fi
+        done
+    done
+}
+
+pagerank_thrill() {
+    [ -z $RANGE ] && RANGE=$PAGERANK_RANGE
+    for scale in $RANGE; do
+        for run in {1..3}; do
+            SCALE=$scale RUN=$run ./workloads/pagerank/thrill/bin/run.sh
         done
     done
 }

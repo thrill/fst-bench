@@ -2,6 +2,8 @@
 
 set -e
 
+DIR=`dirname "$0"`
+
 cd $SPARK_HOME/
 
 PROCZERO=$(hostname -i)
@@ -14,3 +16,17 @@ for IP in $(cat ~/boxes.txt); do
 
     ssh $IP "cd $SPARK_HOME && $SPARK_HOME/sbin/start-slave.sh --memory 26000MB spark://$PROCZERO:7077"
 done
+
+# write default parallelism config file
+parallelism=$(cat ~/boxes.txt | wc -l)
+parallelism=$((parallelism * 4))
+
+cat <<EOF | tee ${DIR}/conf/99-zzz-automatic.conf
+# execute parallelism settings
+hibench.default.map.parallelism		${parallelism}
+hibench.default.shuffle.parallelism	${parallelism}
+
+# YARN resource configuration
+hibench.yarn.executor.num	${parallelism}
+hibench.yarn.executor.cores	${parallelism}
+EOF
