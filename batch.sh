@@ -29,6 +29,21 @@ terasort_prepare() {
 
 ################################################################################
 
+function log2 {
+    local x=0
+    for ((y=$1 - 1; $y > 0; y >>= 1)); do
+        let x=$x+1
+    done
+    echo $x
+}
+
+function log2hosts {
+    h=$(cat ~/boxes.txt | wc -l)
+    echo $(log2 $h)
+}
+
+################################################################################
+
 wordcount_spark() {
     [ -z $RANGE ] && RANGE=$WORDCOUNT_RANGE
     ./setup-ec2/spark-start.sh
@@ -56,7 +71,7 @@ wordcount_flink() {
             fi
         done
     done
-    ./setup-ec2/spark-stop.sh
+    ./setup-ec2/flink-stop.sh
 }
 
 wordcount_thrill() {
@@ -102,6 +117,43 @@ pagerank_thrill() {
         for run in {1..3}; do
             SCALE=$scale RUN=$run ./workloads/pagerank/thrill/bin/run.sh
         done
+    done
+}
+
+pagerank_scale() {
+
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/spark-start.sh
+
+    for run in {1..3}; do
+        s=$(log2hosts)
+        SCALE=$((23 + s)) RUN=$run ./workloads/pagerank/spark/scala/bin/run.sh
+    done
+    for run in {1..3}; do
+        SCALE=24 RUN=$run ./workloads/pagerank/spark/scala/bin/run.sh
+    done
+
+    ./setup-ec2/spark-stop.sh
+
+    ./setup-ec2/flink-stop.sh || true
+    ./setup-ec2/flink-start.sh
+
+    for run in {1..3}; do
+        s=$(log2hosts)
+        SCALE=$((23 + s)) RUN=$run ./workloads/pagerank/flink/scala/bin/run.sh
+    done
+    for run in {1..3}; do
+        SCALE=24 RUN=$run ./workloads/pagerank/flink/scala/bin/run.sh
+    done
+
+    ./setup-ec2/flink-stop.sh
+
+    for run in {1..3}; do
+        s=$(log2hosts)
+        SCALE=$((23 + s)) RUN=$run ./workloads/pagerank/thrill/bin/run.sh
+    done
+    for run in {1..3}; do
+        SCALE=24 RUN=$run ./workloads/pagerank/thrill/bin/run.sh
     done
 }
 

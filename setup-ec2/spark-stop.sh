@@ -2,8 +2,6 @@
 
 set -e
 
-cd $SPARK_HOME/
-
 PROCZERO=$(hostname -i)
 DIR=`dirname "$0"`
 
@@ -16,4 +14,4 @@ done
 echo "Stopping Spark Master on $PROCZERO"
 $SPARK_HOME/sbin/stop-master.sh
 
-rm ${DIR}/conf/99-zzz-automatic.conf
+rm -f ${DIR}/../conf/99-zzz-automatic.conf

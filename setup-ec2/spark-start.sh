@@ -4,8 +4,6 @@ set -e
 
 DIR=`dirname "$0"`
 
-cd $SPARK_HOME/
-
 PROCZERO=$(hostname -i)
 
 echo "Starting Spark Master on $PROCZERO"
@@ -21,7 +19,8 @@ done
 parallelism=$(cat ~/boxes.txt | wc -l)
 parallelism=$((parallelism * 4))
 
-cat <<EOF | tee ${DIR}/conf/99-zzz-automatic.conf
+pwd
+cat <<EOF | tee ${DIR}/../conf/99-zzz-automatic.conf
 # execute parallelism settings
 hibench.default.map.parallelism		${parallelism}
 hibench.default.shuffle.parallelism	${parallelism}
