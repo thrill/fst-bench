@@ -225,6 +225,46 @@ terasort_thrill() {
     done
 }
 
+terasort_scale() {
+
+    s=$(log2hosts)
+    WEAKSCALE=$((34 + s))
+    SCALE=$WEAKSCALE ./workloads/terasort/prepare/prepare.sh
+
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/spark-start.sh
+
+    for run in {1..1}; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark/scala/bin/run.sh
+    done
+    # for run in {1..1}; do
+    #     SCALE=36 RUN=$run ./workloads/terasort/spark/scala/bin/run.sh
+    # done
+
+    ./setup-ec2/spark-stop.sh
+
+    ./setup-ec2/flink-stop.sh || true
+    ./setup-ec2/flink-start.sh
+
+    for run in {1..1}; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/flink/scala/bin/run.sh
+    done
+    # for run in {1..1}; do
+    #     SCALE=36 RUN=$run ./workloads/terasort/flink/scala/bin/run.sh
+    # done
+
+    ./setup-ec2/flink-stop.sh
+
+    for run in {1..3}; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/thrill/bin/run.sh
+    done
+    # for run in {1..1}; do
+    #     SCALE=36 RUN=$run ./workloads/terasort/thrill/bin/run.sh
+    # done
+}
+
+################################################################################
+
 for p in $@; do
     $p
 done

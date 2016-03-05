@@ -29,7 +29,7 @@ START_TIME=`timestamp`
 run-spark-job --jars ${HIBENCH_HOME}/src/terasort-eastcircle/target/terasort-eastcircle-5.0-SNAPSHOT.jar eastcircle.terasort.SparkTeraSort "file:///" $INPUT_HDFS $OUTPUT_HDFS 4
 END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench
 
