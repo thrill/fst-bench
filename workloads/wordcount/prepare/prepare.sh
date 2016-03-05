@@ -38,6 +38,7 @@ OUT=${INPUT_HDFS##file://}
 
 mkdir -p "$OUT"
 $HOME/thrill/build/examples/word_count/random_text_writer ${DATASIZE} > ${OUT}/input.txt
+sync
 
 END_TIME=`timestamp`
 

@@ -43,6 +43,7 @@ cd ~/fst-bench/setup/
 
 ssh-keygen -f ~/.ssh/id_rsa -t rsa -b 2048 -N ''
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
 ################################################################################
 # Setup control box as NFS server
