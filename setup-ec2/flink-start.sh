@@ -23,3 +23,4 @@ for IP in $(cat ~/boxes.txt); do
 
     ssh $IP "$FLINK_HOME/bin/taskmanager.sh start batch"
 done
+sleep 20s

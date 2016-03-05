@@ -83,6 +83,44 @@ wordcount_thrill() {
     done
 }
 
+wordcount_scale() {
+
+    s=$(log2hosts)
+    WEAKSCALE=$((33 + s))
+    SCALE=$WEAKSCALE ./workloads/wordcount/prepare/prepare.sh
+
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/spark-start.sh
+
+    for run in {1..3}; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark/scala/bin/run.sh
+    done
+    # for run in {1..3}; do
+    #     SCALE=37 RUN=$run ./workloads/wordcount/spark/scala/bin/run.sh
+    # done
+
+    ./setup-ec2/spark-stop.sh
+
+    ./setup-ec2/flink-stop.sh || true
+    ./setup-ec2/flink-start.sh
+
+    for run in {1..3}; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink/scala/bin/run.sh
+    done
+    # for run in {1..3}; do
+    #     SCALE=37 RUN=$run ./workloads/wordcount/flink/scala/bin/run.sh
+    # done
+
+    ./setup-ec2/flink-stop.sh
+
+    for run in {1..3}; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/thrill/bin/run.sh
+    done
+    # for run in {1..3}; do
+    #     SCALE=37 RUN=$run ./workloads/wordcount/thrill/bin/run.sh
+    # done
+}
+
 ################################################################################
 
 pagerank_spark() {
