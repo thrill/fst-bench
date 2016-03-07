@@ -37,11 +37,13 @@ function enter_bench(){		# declare the entrance of a workload
     local CONF_FILE=`${workload_func_bin}/load-config.py ${HIBENCH_CONF_FOLDER} $workload_root $workload_folder $patching_args`
 #    ${workload_func_bin}/load-config.py ${HIBENCH_CONF_FOLDER} $workload_root $workload_folder $patching_args
     . $CONF_FILE
+    sync
 }
 
 function leave_bench(){		# declare the workload is finished
     assert $HIBENCH_CUR_WORKLOAD_NAME "BUG, HIBENCH_CUR_WORKLOAD_NAME unset."
     unset HIBENCH_CUR_WORKLOAD_NAME
+    sync
 }
 
 function show_bannar(){		# print bannar

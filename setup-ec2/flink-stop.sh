@@ -14,3 +14,5 @@ done
 
 echo "Stopping Flink JobManager on $PROCZERO"
 $FLINK_HOME/bin/jobmanager.sh stop
+
+sleep 10s
