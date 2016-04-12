@@ -50,7 +50,7 @@ object DenseKMeans {
       input: String = null,
       k: Int = -1,
       numIterations: Int = 10,
-      initializationMode: InitializationMode = Parallel)
+      initializationMode: InitializationMode = Random)
 
   def main(args: Array[String]) {
     val defaultParams = Params()
@@ -112,10 +112,10 @@ object DenseKMeans {
       .setInitializationMode(initMode)
       .setK(params.k)
       .setMaxIterations(params.numIterations)
+      .setEpsilon(0)
       .run(examples)
 
     val cost = model.computeCost(examples)
-
     println(s"Total cost = $cost.")
 
     sc.stop()

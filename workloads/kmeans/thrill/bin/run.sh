@@ -16,25 +16,20 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/../../..
+workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench ScalaSparkKmeans ${workload_root} ${workload_folder}
+enter_bench ThrillKmeans ${workload_root} ${workload_folder}
 show_bannar start
 
 rmr-hdfs $OUTPUT_HDFS || true
+mkdir $OUTPUT_HDFS
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-
-run-spark-job org.apache.spark.examples.mllib.DenseKMeans -k "$K" --numIterations "$MAX_ITERATION" "$INPUT_HDFS/samples"
+run-thrill-job build/examples/k-means/k-means_run --iterations "$MAX_ITERATION" "$DIMENSIONS" "$K" "$INPUT_HDFS/plain/part-*"
 END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} dimensions=${DIMENSIONS}
 show_bannar finish
 leave_bench
-
-# run bench
-#run-spark-job org.apache.spark.examples.mllib.DenseKMeans -k $K --numIterations $MAX_ITERATION $INPUT_HDFS || exit 1
-#$SPARK_HOME/bin/spark-submit --class org.apache.spark.examples.mllib.DenseKMeans --master ${SPARK_MASTER} ${SPARK_EXAMPLES_JAR} -k $K --numIterations $MAX_ITERATION $INPUT_HDFS
-
