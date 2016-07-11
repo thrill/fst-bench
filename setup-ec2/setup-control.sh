@@ -5,6 +5,7 @@ set -e
 export PYTHON_VERSION=2.7
 export JDK_VERSION=8
 export CEPH_RELEASE=infernalis
+export CEPH_RELEASE=
 
 # Make sure only a user can run our script
 if [ "$(id -u)" == "0" ]; then
@@ -60,52 +61,56 @@ sudo service nfs-kernel-server start
 ################################################################################
 # Install ceph's Cluster Monitor and MDS on the control box
 
-# install ceph packages
-wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
+if [ "$CEPH_RELEASE" != "" ]; then
 
-echo "deb http://download.ceph.com/debian-${CEPH_RELEASE}/ $(lsb_release -sc) main" \
-     | sudo tee /etc/apt/sources.list.d/ceph.list
+    # install ceph packages
+    wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 
-sudo apt-get update && sudo apt-get install -y ceph-deploy
+    echo "deb http://download.ceph.com/debian-${CEPH_RELEASE}/ $(lsb_release -sc) main" \
+        | sudo tee /etc/apt/sources.list.d/ceph.list
 
-# move into ceph-deploy configuration directory
-cd ~
-mkdir ceph || true
-cd ceph
+    sudo apt-get update && sudo apt-get install -y ceph-deploy
 
-# start new ceph configuration
-ceph-deploy new $(hostname)
+    # move into ceph-deploy configuration directory
+    cd ~
+    mkdir ceph || true
+    cd ceph
 
-# one copy per block
-echo "osd pool default size = 2" >> ceph.conf
+    # start new ceph configuration
+    ceph-deploy new $(hostname)
 
-# install ceph packages on control box
-ceph-deploy install $(hostname)
+    # one copy per block
+    echo "osd pool default size = 2" >> ceph.conf
 
-# create monitor instance
-ceph-deploy mon create-initial
+    # install ceph packages on control box
+    ceph-deploy install $(hostname)
 
-# install ceph admin config on localhost
-ceph-deploy admin $(hostname)
-sudo chmod +r /etc/ceph/ceph.client.admin.keyring
+    # create monitor instance
+    ceph-deploy mon create-initial
 
-# check health
-ceph health
+    # install ceph admin config on localhost
+    ceph-deploy admin $(hostname)
+    sudo chmod +r /etc/ceph/ceph.client.admin.keyring
 
-# install MDS server and create FS
+    # check health
+    ceph health
 
-ceph-deploy mds create $(hostname)
+    # install MDS server and create FS
 
-ceph osd pool create cephfs_data 32
-ceph osd pool create cephfs_metadata 32
+    ceph-deploy mds create $(hostname)
 
-ceph fs new fs0 cephfs_metadata cephfs_data
+    ceph osd pool create cephfs_data 32
+    ceph osd pool create cephfs_metadata 32
+
+    ceph fs new fs0 cephfs_metadata cephfs_data
+
+fi
 
 ################################################################################
 # setup environment hook
 
 echo "source ~/fst-bench/setup/env.sh" >> ~/.bashrc
-echo "export WORK=/ceph0" >> ~/.bashrc
+echo "export WORK=/efs" >> ~/.bashrc
 
 ################################################################################
 # Build Thrill on the control box
@@ -132,6 +137,6 @@ mkdir -p ~/fst-bench/report/spark-eventlog/
 ################################################################################
 
 # messages
-echo "Cannot mount /ceph0 immediately, add a compute node first."
+echo "Cannot mount /efs immediately, add a compute node first."
 
 ################################################################################

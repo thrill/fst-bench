@@ -32,55 +32,59 @@ $SSHTOBOX 'bash' < ~/fst-bench/setup/setup-root.sh
 ################################################################################
 # Setup compute node as Ceph Storage Device
 
-# these commands must be run on the control box
-cd ~/ceph
-ceph health
+if [ 0 ]; then
 
-# install ceph packages on control box
-ceph-deploy install $BOX
+    # these commands must be run on the control box
+    cd ~/ceph
+    ceph health
 
-# find disks (all of them) and add them to ceph system
-DISKS=$($SSHTOBOX ls /dev/xvd[b-z])
-echo "Disks on compute node: $DISKS"
+    # install ceph packages on control box
+    ceph-deploy install $BOX
 
-i=0
-for disk in $DISKS; do
-    # partition disk: one partition
-    $SSHTOBOX "sudo parted -s -a optimal $disk print" || true
-    sleep 2s
-    $SSHTOBOX "sudo parted -s -a optimal $disk mklabel gpt"
-    sleep 2s
-    $SSHTOBOX "sudo parted -s -a optimal $disk mkpart primary xfs 0% 100%"
-    sleep 2s
-    $SSHTOBOX "sudo parted -s -a optimal $disk print"
-    sleep 2s
-    $SSHTOBOX "sudo partx $disk && sudo mkfs.xfs ${disk}1" || true
-    $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk}1 /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
-    $SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && sudo chmod a+wt /tmp/"
+    # find disks (all of them) and add them to ceph system
+    DISKS=$($SSHTOBOX ls /dev/xvd[b-z])
+    echo "Disks on compute node: $DISKS"
 
-    ceph-deploy osd prepare $BOX:/data$i/ceph/
+    i=0
+    for disk in $DISKS; do
+        # partition disk: one partition
+        $SSHTOBOX "sudo parted -s -a optimal $disk print" || true
+        sleep 2s
+        $SSHTOBOX "sudo parted -s -a optimal $disk mklabel gpt"
+        sleep 2s
+        $SSHTOBOX "sudo parted -s -a optimal $disk mkpart primary xfs 0% 100%"
+        sleep 2s
+        $SSHTOBOX "sudo parted -s -a optimal $disk print"
+        sleep 2s
+        $SSHTOBOX "sudo partx $disk && sudo mkfs.xfs ${disk}1" || true
+        $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk}1 /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
+        $SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && sudo chmod a+wt /tmp/"
 
-    i=$(($i+1))
-done
+        ceph-deploy osd prepare $BOX:/data$i/ceph/
 
-# copy admin files
-ceph-deploy admin $BOX
+        i=$(($i+1))
+    done
 
-i=0
-for disk in $DISKS; do
-    $SSHTOBOX "sudo chown ceph:ceph -R /data$i/ceph"
-    ceph-deploy osd activate $BOX:/data$i/ceph/
-    i=$(($i+1))
-done
+    # copy admin files
+    ceph-deploy admin $BOX
 
-# mount ceph file system
+    i=0
+    for disk in $DISKS; do
+        $SSHTOBOX "sudo chown ceph:ceph -R /data$i/ceph"
+        ceph-deploy osd activate $BOX:/data$i/ceph/
+        i=$(($i+1))
+    done
 
-LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
-ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
+    # mount ceph file system
 
-$SSHTOBOX "sudo mkdir /ceph0 || true"
-$SSHTOBOX "sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}"
-$SSHTOBOX "sudo chmod a+w /ceph0/"
+    LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
+    ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
+
+    $SSHTOBOX "sudo mkdir /ceph0 || true"
+    $SSHTOBOX "sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}"
+    $SSHTOBOX "sudo chmod a+w /ceph0/"
+
+fi
 
 ################################################################################
 # mount NFS on compute box (overrides /home)
