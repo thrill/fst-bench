@@ -31,7 +31,7 @@ Launch a control box. We start with the current standard Ubuntu LTS image.
 aws ec2 run-instances --image-id ami-f95ef58a \
   --key-name rsa.tb2 --instance-type m4.large \
   --security-groups default \
-  --placement "AvailabilityZone=eu-west-1b,GroupName=cluster" \
+  --placement "AvailabilityZone=eu-west-1c,GroupName=cluster-1c" \
   --enable-api-termination \
   --block-device-mappings '{ "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 20, "DeleteOnTermination": true, "VolumeType": "gp2" } }' \
   --ebs-optimized
@@ -53,7 +53,7 @@ aws ec2 request-spot-instances \
   --spot-price "0.20" --instance-count 1 \
   --type "one-time" \
   --launch-specification \
-  '{"ImageId": "ami-f95ef58a","InstanceType": "i2.xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1b", "GroupName": "cluster"}, "EbsOptimized": true }'
+  '{"ImageId": "ami-f95ef58a","InstanceType": "i2.xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1c", "GroupName": "cluster-1c"}, "EbsOptimized": true }'
 ```
 
 For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.

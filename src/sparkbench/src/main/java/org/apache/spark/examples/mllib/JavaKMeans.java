@@ -75,7 +75,8 @@ public final class JavaKMeans {
     JavaPairRDD<LongWritable, VectorWritable> data = sc.sequenceFile(inputFile,
                 LongWritable.class, VectorWritable.class);
 
-    JavaRDD<Vector> points = data.map(new Function<Tuple2<LongWritable, VectorWritable>, Vector>() {
+    JavaRDD<Vector> points =
+        data.map(new Function<Tuple2<LongWritable, VectorWritable>, Vector>() {
         @Override
         public Vector call(Tuple2<LongWritable, VectorWritable> e) {
             VectorWritable val = e._2();
@@ -87,7 +88,8 @@ public final class JavaKMeans {
         }
     });
 
-    KMeansModel model = KMeans.train(points.rdd(), k, iterations, runs, KMeans.K_MEANS_PARALLEL());
+    KMeansModel model = KMeans
+        .train(points.rdd(), k, iterations, runs, KMeans.K_MEANS_PARALLEL());
 
     System.out.println("Cluster centers:");
     for (Vector center : model.clusterCenters()) {
