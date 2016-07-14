@@ -28,6 +28,8 @@ function enter_bench(){		# declare the entrance of a workload
     assert $1 "Workload name not specified."
     assert $2 "Workload root not specified."
     assert $3 "Workload folder not specified."
+    # unset ssh-agent to use local keys only
+    unset SSH_AUTH_SOCK
     export HIBENCH_CUR_WORKLOAD_NAME=$1
     workload_root=$2
     workload_folder=$3
@@ -244,6 +246,8 @@ function run-thrill-job() {
 
     THRILL_EXEC=$1
     shift
+
+    export THRILL_LOG=${WORKLOAD_RESULT_FOLDER}/profile
 
     if [ -n "${SLURM_JOB_NODELIST:-}" ]; then
         SUBMIT_CMD="${THRILL_HOME}/run/slurm/invoke.sh '${THRILL_HOME}/${THRILL_EXEC}' $@"
