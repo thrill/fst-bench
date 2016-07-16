@@ -87,7 +87,7 @@ wordcount_thrill() {
 wordcount_scale() {
 
     s=$(log2hosts)
-    WEAKSCALE=$((33 + s))
+    WEAKSCALE=$((35 + s))
     SCALE=$WEAKSCALE ./workloads/wordcount/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
@@ -215,8 +215,7 @@ terasort_thrill() {
 terasort_scale() {
 
     s=$(log2hosts)
-    WEAKSCALE=$((34 + s))
-    WEAKSCALE=$((30 + s))
+    WEAKSCALE=$((36 + s))
     SCALE=$WEAKSCALE ./workloads/terasort/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
@@ -249,7 +248,7 @@ terasort_scale() {
 kmeans_scale() {
 
     s=$(log2hosts)
-    WEAKSCALE=$((22 + s))
+    WEAKSCALE=$((24 + s))
     SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true

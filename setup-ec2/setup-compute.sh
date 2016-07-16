@@ -44,7 +44,7 @@ if [ 1 == 1 ]; then
     ceph-deploy install $BOX
 
     # find disks (all of them) and add them to ceph system
-    DISKS=$($SSHTOBOX ls /dev/xvd[b-z])
+    DISKS=$($SSHTOBOX ls /dev/xvd[b])
     echo "Disks on compute node: $DISKS"
 
     i=0
