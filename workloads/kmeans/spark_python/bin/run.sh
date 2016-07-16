@@ -19,18 +19,23 @@ workload_folder=`cd "$workload_folder"; pwd`
 workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-SUBMARK=thrill
-enter_bench ThrillPagerank ${workload_root} ${workload_folder}
+enter_bench PythonSparkKmeans ${workload_root} ${workload_folder}
 show_bannar start
 
 rmr-hdfs $OUTPUT_HDFS || true
-mkdir $OUTPUT_HDFS
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-thrill-job build/examples/page_rank/page_rank_run --output "$OUTPUT_HDFS/output" --iterations $NUM_ITERATIONS "$INPUT_HDFS/edges/part-*"
+
+run-spark-job ${HIBENCH_PYTHON_PATH}/kmeans.py $INPUT_HDFS/samples $K $MAX_ITERATION
 END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
+gen_report ${START_TIME} ${END_TIME} ${SIZE}
 show_bannar finish
 leave_bench
+
+
+# run bench
+#run-spark-job ${SPARKBENCH_HOME}/common/src/main/python/kmeans.py $INPUT_HDFS $K $MAX_ITERATION || exit 1
+#$SPARK_HOME/bin/spark-submit --master ${SPARK_MASTER} ${DIR}/kmeans.py $INPUT_HDFS $K $MAX_ITERATION 
+

@@ -32,7 +32,9 @@ $SSHTOBOX 'bash' < ~/fst-bench/setup/setup-root.sh
 ################################################################################
 # Setup compute node as Ceph Storage Device
 
-if [ 0 ]; then
+LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
+
+if [ 0 == 1 ]; then
 
     # these commands must be run on the control box
     cd ~/ceph
@@ -77,7 +79,6 @@ if [ 0 ]; then
 
     # mount ceph file system
 
-    LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
     ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
 
     $SSHTOBOX "sudo mkdir /ceph0 || true"

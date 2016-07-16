@@ -12,12 +12,12 @@ $SPARK_HOME/sbin/start-master.sh -h 0.0.0.0
 for IP in $(cat ~/boxes.txt); do
     echo "Starting Spark Slave on $IP"
 
-    ssh $IP "cd $SPARK_HOME && $SPARK_HOME/sbin/start-slave.sh --memory 24000MB spark://$PROCZERO:7077"
+    ssh $IP "cd $SPARK_HOME && $SPARK_HOME/sbin/start-slave.sh --memory 200000MB spark://$PROCZERO:7077"
 done
 
 # write default parallelism config file
 parallelism=$(cat ~/boxes.txt | wc -l)
-parallelism=$((parallelism * 4))
+parallelism=$((parallelism * 32))
 
 pwd
 cat <<EOF | tee ${DIR}/../conf/99-zzz-automatic.conf

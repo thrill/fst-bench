@@ -67,16 +67,19 @@ function timestamp(){		# get current timestamp
 }
 
 function start-monitor(){
-    MONITOR_PID=`${workload_func_bin}/monitor.py ${HIBENCH_CUR_WORKLOAD_NAME} $$ ${WORKLOAD_RESULT_FOLDER}/monitor.log ${WORKLOAD_RESULT_FOLDER}/bench.log ${WORKLOAD_RESULT_FOLDER}/monitor.html ${SLAVES} &`
-#    echo "start monitor, got child pid:${MONITOR_PID}" > /dev/stderr
-    echo ${MONITOR_PID}
+    MONITOR1_PID=`${workload_func_bin}/monitor.py ${HIBENCH_CUR_WORKLOAD_NAME} $$ ${WORKLOAD_RESULT_FOLDER}/monitor.log ${WORKLOAD_RESULT_FOLDER}/bench.log ${WORKLOAD_RESULT_FOLDER}/monitor.html ${SLAVES} &`
+    #echo "start monitor1, got child pid:${MONITOR1_PID}" > /dev/stderr
+    ("${THRILL_HOME}/misc/standalone_profiler_run.sh" -h "${SLAVES}" "${THRILL_HOME}/build/misc/standalone_profiler" "${WORKLOAD_RESULT_FOLDER}/profile" > /dev/null) &!
+    MONITOR2_PID=$!
+    #echo "start monitor2, got child pid:${MONITOR2_PID}" > /dev/stderr
+    echo ${MONITOR1_PID} ${MONITOR2_PID}
 }
 
 function stop-monitor(){
-    MONITOR_PID=$1
+    MONITOR_PID=$@
     assert $1 "monitor pid missing"
-#    echo "stop monitor, kill ${MONITOR_PID}" > /dev/stderr
-    kill ${MONITOR_PID}
+    #echo "stop monitor, kill ${MONITOR_PID}" > /dev/stderr
+    kill -INT ${MONITOR_PID}
 }
 
 function gen_report() {		# dump the result to report file
@@ -247,7 +250,7 @@ function run-thrill-job() {
     THRILL_EXEC=$1
     shift
 
-    export THRILL_LOG=${WORKLOAD_RESULT_FOLDER}/profile
+    export THRILL_LOG="${WORKLOAD_RESULT_FOLDER}/int_profile"
 
     if [ -n "${SLURM_JOB_NODELIST:-}" ]; then
         SUBMIT_CMD="${THRILL_HOME}/run/slurm/invoke.sh '${THRILL_HOME}/${THRILL_EXEC}' $@"
