@@ -34,7 +34,7 @@ $SSHTOBOX 'bash' < ~/fst-bench/setup/setup-root.sh
 
 LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 
-if [ 0 == 1 ]; then
+if [ 1 == 1 ]; then
 
     # these commands must be run on the control box
     cd ~/ceph
@@ -81,9 +81,9 @@ if [ 0 == 1 ]; then
 
     ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
 
-    $SSHTOBOX "sudo mkdir /ceph0 || true"
-    $SSHTOBOX "sudo mount -t ceph $LOCALIP:6789:/ /ceph0 -o name=admin,secret=${ADMINKEY}"
-    $SSHTOBOX "sudo chmod a+w /ceph0/"
+    $SSHTOBOX "sudo mkdir /efs || true"
+    $SSHTOBOX "sudo mount -t ceph $LOCALIP:6789:/ /efs -o name=admin,secret=${ADMINKEY}"
+    $SSHTOBOX "sudo chmod a+w /efs/"
 
 fi
 

@@ -5,7 +5,7 @@ set -e
 export PYTHON_VERSION=2.7
 export JDK_VERSION=8
 export CEPH_RELEASE=infernalis
-export CEPH_RELEASE=
+#export CEPH_RELEASE=
 
 # Make sure only a user can run our script
 if [ "$(id -u)" == "0" ]; then
@@ -80,7 +80,7 @@ if [ "$CEPH_RELEASE" != "" ]; then
     ceph-deploy new $(hostname)
 
     # one copy per block
-    echo "osd pool default size = 2" >> ceph.conf
+    echo "osd pool default size = 1" >> ceph.conf
 
     # install ceph packages on control box
     ceph-deploy install $(hostname)

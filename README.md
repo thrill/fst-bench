@@ -53,7 +53,7 @@ aws ec2 request-spot-instances \
   --spot-price "0.80" --instance-count 1 \
   --type "one-time" \
   --launch-specification \
-  '{"ImageId": "ami-b07e1fc3","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1b", "GroupName": "cluster-1b"}, "EbsOptimized": false }'
+  '{"ImageId": "ami-f95ef58a","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1b", "GroupName": "cluster-1b"}, "EbsOptimized": false }'
 ```
 
 For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.
