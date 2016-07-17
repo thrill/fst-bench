@@ -18,6 +18,10 @@ parallelism=$(cat ~/boxes.txt | wc -l)
 parallelism=$((parallelism * 32))
 sed -ie "s/^parallelism.default:.*$/parallelism.default: $parallelism/" $FLINK_HOME/conf/flink-conf.yaml
 
+buffers=$(cat ~/boxes.txt | wc -l)
+buffers=$((buffers * 10000))
+sed -ie "s/^.*taskmanager.network.numberOfBuffers: .*$/taskmanager.network.numberOfBuffers: $buffers/" $FLINK_HOME/conf/flink-conf.yaml
+
 for IP in $(cat ~/boxes.txt); do
     echo "Starting Flink TaskManager on $IP"
 

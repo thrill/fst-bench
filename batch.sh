@@ -94,6 +94,7 @@ wordcount_scale() {
     ./setup-ec2/spark-start.sh
 
     for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark_scala/bin/run.sh
     done
 
@@ -103,6 +104,7 @@ wordcount_scale() {
     ./setup-ec2/flink-start.sh
 
     for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink_scala/bin/run.sh
     done
 
@@ -162,6 +164,7 @@ pagerank_scale() {
     ./setup-ec2/spark-start.sh
 
     for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE  RUN=$run ./workloads/pagerank/spark_java/bin/run.sh
         SCALE=$WEAKSCALE  RUN=$run ./workloads/pagerank/spark_scala/bin/run.sh
     done
 
@@ -171,6 +174,7 @@ pagerank_scale() {
     ./setup-ec2/flink-start.sh
 
     for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/flink_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/flink_scala/bin/run.sh
     done
 
@@ -215,13 +219,14 @@ terasort_thrill() {
 terasort_scale() {
 
     s=$(log2hosts)
-    WEAKSCALE=$((36 + s))
+    WEAKSCALE=$((34 + s))
     SCALE=$WEAKSCALE ./workloads/terasort/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
     ./setup-ec2/spark-start.sh
 
-    for run in {1..1}; do
+    for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_scala/bin/run.sh
     done
 
@@ -230,7 +235,7 @@ terasort_scale() {
     ./setup-ec2/flink-stop.sh || true
     ./setup-ec2/flink-start.sh
 
-    for run in {1..1}; do
+    for run in $RUN_RANGE; do
         SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/flink_scala/bin/run.sh
     done
 
@@ -254,7 +259,8 @@ kmeans_scale() {
     ./setup-ec2/spark-stop.sh || true
     ./setup-ec2/spark-start.sh
 
-    for run in {1..1}; do
+    for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_scala/bin/run.sh
     done
 
@@ -265,6 +271,15 @@ kmeans_scale() {
     done
 
     rm -rvf /efs/HiBench/Kmeans/$SCALE
+}
+
+################################################################################
+
+all_scale() {
+    wordcount_scale
+    pagerank_scale
+    terasort_scale
+    kmeans_scale
 }
 
 ################################################################################

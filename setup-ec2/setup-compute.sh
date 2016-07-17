@@ -94,6 +94,11 @@ $SSHTOBOX "sudo apt-get install -y nfs-common"
 $SSHTOBOX "sudo mount $LOCALIP:/home /home"
 
 ################################################################################
+# setup /tmp to SSD
+
+$SSHTOBOX "sudo mkfs.xfs /dev/xvdc && sudo mount /dev/xvdc /tmp && sudo chmod a+w /tmp"
+
+################################################################################
 # Save $BOX in ~/boxes.txt for running benchmarks
 
 $SSHTOBOX "df"

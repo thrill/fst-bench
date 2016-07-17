@@ -104,6 +104,9 @@ if [ "$CEPH_RELEASE" != "" ]; then
 
     ceph fs new fs0 cephfs_metadata cephfs_data
 
+    # legacy support
+    ceph osd crush tunables legacy
+
 fi
 
 ################################################################################

@@ -20,7 +20,7 @@ To run benchmarks on Amazon's EC2 Cloud we pull up the following test cluster us
 
 The control box hosts a NFS server, which is exported to the compute nodes as `/home/`. The NFS volume contains all sources, report logs, etc, but no compute data.
 
-Additionally, we setup a ceph distributed file system using the compute machines' ephemeral local disks to store "Big Data". The control box contains only the central ceph services like the metadata server, while the compute nodes are the ODS nodes. The ceph DFS is mounted to `/ceph0/` on all boxes.
+Additionally, we setup a ceph distributed file system using the compute machines' ephemeral local disks to store "Big Data". The control box contains only the central ceph services like the metadata server, while the compute nodes are the ODS nodes. The ceph DFS is mounted to `/efs/` on all boxes.
 
 We select a `m4.xlarge` on-demand EC2 instance for the control box, and `i2.xlarge` spot instances for the compute nodes.
 
@@ -33,7 +33,7 @@ aws ec2 run-instances --image-id ami-f95ef58a \
   --security-groups default \
   --placement "AvailabilityZone=eu-west-1c,GroupName=cluster-1c" \
   --enable-api-termination \
-  --block-device-mappings '{ "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 20, "DeleteOnTermination": true, "VolumeType": "gp2" } }' \
+  --block-device-mappings '{ "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 60, "DeleteOnTermination": true, "VolumeType": "gp2" } }' \
   --ebs-optimized
 ```
 
@@ -53,7 +53,7 @@ aws ec2 request-spot-instances \
   --spot-price "0.80" --instance-count 1 \
   --type "one-time" \
   --launch-specification \
-  '{"ImageId": "ami-f95ef58a","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1b", "GroupName": "cluster-1b"}, "EbsOptimized": false }'
+  '{"ImageId": "ami-f95ef58a","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1c", "GroupName": "cluster-1c"}, "EbsOptimized": false }'
 ```
 
 For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.
