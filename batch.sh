@@ -5,7 +5,7 @@ set -e
 WORDCOUNT_RANGE=$(seq 20 38)
 TERASORT_RANGE=$(seq 30 36)
 PAGERANK_RANGE=$(seq 15 24)
-RUN_RANGE=$(seq 1 1)
+RUN_RANGE=$(seq 1 3)
 
 wordcount_prepare() {
     [ -z $RANGE ] && RANGE=$WORDCOUNT_RANGE

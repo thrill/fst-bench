@@ -32,7 +32,7 @@
 	<jetty.version>8.1.14.v20131031</jetty.version>
 	<scalatest.version>2.2.1</scalatest.version>
 	<scalacheck.version>1.11.3</scalacheck.version>
-        <flink.version>0.10.2</flink.version>
+        <flink.version>1.0.3</flink.version>
     </properties>
 
     <repositories>
@@ -132,7 +132,7 @@
             <id>spark1.6</id>
             <properties>
                 <env>spark1.6</env>
-                <spark.version>1.6.0</spark.version>
+                <spark.version>1.6.2</spark.version>
                 <spark.bin.version>1.6</spark.bin.version>
             </properties>
             <activation>
