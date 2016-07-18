@@ -50,10 +50,10 @@ After running the script, reboot the box to load the newest kernel.
 Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
 ```
 aws ec2 request-spot-instances \
-  --spot-price "0.80" --instance-count 1 \
+  --spot-price "1.00" --instance-count 1 \
   --type "one-time" \
   --launch-specification \
-  '{"ImageId": "ami-f95ef58a","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1c", "GroupName": "cluster-1c"}, "EbsOptimized": false }'
+  '{"ImageId": "ami-f95ef58a","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'
 ```
 
 For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.

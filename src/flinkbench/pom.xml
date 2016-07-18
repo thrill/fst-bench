@@ -81,6 +81,11 @@ much cleaner jar files.
       <version>${flink.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-scala_2.10</artifactId>
+      <version>${flink.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.4</version>
