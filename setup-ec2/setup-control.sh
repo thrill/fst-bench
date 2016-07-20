@@ -54,7 +54,7 @@ LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 LOCALMASK=$(ifconfig eth0 | awk '/ Mask:/ { print $4 }' | cut -d ':' -f 2)
 LOCALCIDR=$(ipcalc $LOCALIP $LOCALMASK | awk '/Network: / { print $2 }')
 sudo sed -ie '/\/home/d' /etc/exports
-echo "/home   $LOCALCIDR(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+echo "/home   $LOCALCIDR(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
 sudo exportfs -av
 sudo service nfs-kernel-server start
 
@@ -66,7 +66,7 @@ if [ "$CEPH_RELEASE" != "" ]; then
     # install ceph packages
     wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 
-    echo "deb http://download.ceph.com/debian-${CEPH_RELEASE}/ $(lsb_release -sc) main" \
+    echo "deb http://download.ceph.com/debian-infernalis/ $(lsb_release -sc) main" \
         | sudo tee /etc/apt/sources.list.d/ceph.list
 
     sudo apt-get update && sudo apt-get install -y ceph-deploy
@@ -83,7 +83,7 @@ if [ "$CEPH_RELEASE" != "" ]; then
     echo "osd pool default size = 1" >> ceph.conf
 
     # install ceph packages on control box
-    ceph-deploy install $(hostname)
+    ceph-deploy install --release infernalis $(hostname)
 
     # create monitor instance
     ceph-deploy mon create-initial
@@ -103,9 +103,6 @@ if [ "$CEPH_RELEASE" != "" ]; then
     ceph osd pool create cephfs_metadata 32
 
     ceph fs new fs0 cephfs_metadata cephfs_data
-
-    # legacy support
-    ceph osd crush tunables legacy
 
 fi
 

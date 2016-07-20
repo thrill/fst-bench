@@ -26,6 +26,8 @@ if [ ! $? ]; then
 fi
 unset PUBKEY
 
+$SSHTOBOX "sudo dpkg --configure -a"
+
 # Install many more packages for a useful basic system (same as control box)
 $SSHTOBOX 'bash' < ~/fst-bench/setup/setup-root.sh
 
@@ -41,7 +43,7 @@ if [ 1 == 1 ]; then
     ceph health
 
     # install ceph packages on control box
-    ceph-deploy install $BOX
+    ceph-deploy install --release infernalis $BOX
 
     # find disks (all of them) and add them to ceph system
     DISKS=$($SSHTOBOX ls /dev/xvd[b])
@@ -60,7 +62,7 @@ if [ 1 == 1 ]; then
         sleep 2s
         $SSHTOBOX "sudo partx $disk && sudo mkfs.xfs ${disk}1" || true
         $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk}1 /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
-        $SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && sudo chmod a+wt /tmp/"
+        #$SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && sudo chmod a+wt /tmp/"
 
         ceph-deploy osd prepare $BOX:/data$i/ceph/
 
@@ -91,12 +93,18 @@ fi
 # mount NFS on compute box (overrides /home)
 
 $SSHTOBOX "sudo apt-get install -y nfs-common"
+$SSHTOBOX "sudo umount -l /home || true"
 $SSHTOBOX "sudo mount $LOCALIP:/home /home"
 
 ################################################################################
 # setup /tmp to SSD
 
 $SSHTOBOX "sudo mkfs.xfs /dev/xvdc && sudo mount /dev/xvdc /tmp && sudo chmod a+w /tmp"
+
+################################################################################
+# increase max open files
+
+$SSHTOBOX 'echo "*  -  nofile  100000" | sudo tee -a /etc/security/limits.conf'
 
 ################################################################################
 # Save $BOX in ~/boxes.txt for running benchmarks
