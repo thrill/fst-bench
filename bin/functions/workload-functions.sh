@@ -67,17 +67,22 @@ function timestamp(){		# get current timestamp
 }
 
 function start-monitor(){
-    MONITOR1_PID=`${workload_func_bin}/monitor.py ${HIBENCH_CUR_WORKLOAD_NAME} $$ ${WORKLOAD_RESULT_FOLDER}/monitor.log ${WORKLOAD_RESULT_FOLDER}/bench.log ${WORKLOAD_RESULT_FOLDER}/monitor.html ${SLAVES} &`
-    #echo "start monitor1, got child pid:${MONITOR1_PID}" > /dev/stderr
-    ("${THRILL_HOME}/misc/standalone_profiler_run.sh" -h "${SLAVES}" "${THRILL_HOME}/build/misc/standalone_profiler" "${WORKLOAD_RESULT_FOLDER}/profile" > /dev/null) &!
-    MONITOR2_PID=$!
-    #echo "start monitor2, got child pid:${MONITOR2_PID}" > /dev/stderr
-    echo ${MONITOR1_PID} ${MONITOR2_PID}
+    if [ -z "${SLURM_JOB_NODELIST:-}" ]; then
+        MONITOR1_PID=`${workload_func_bin}/monitor.py ${HIBENCH_CUR_WORKLOAD_NAME} $$ ${WORKLOAD_RESULT_FOLDER}/monitor.log ${WORKLOAD_RESULT_FOLDER}/bench.log ${WORKLOAD_RESULT_FOLDER}/monitor.html ${SLAVES} &`
+        #echo "start monitor1, got child pid:${MONITOR1_PID}" > /dev/stderr
+        ("${THRILL_HOME}/misc/standalone_profiler_run.sh" -h "${SLAVES}" "${THRILL_HOME}/build/misc/standalone_profiler" "${WORKLOAD_RESULT_FOLDER}/profile" > /dev/null) &
+        disown
+        MONITOR2_PID=$!
+        #echo "start monitor2, got child pid:${MONITOR2_PID}" > /dev/stderr
+        echo ${MONITOR1_PID} ${MONITOR2_PID:}
+    else
+        echo ""
+    fi
 }
 
 function stop-monitor(){
     MONITOR_PID=$@
-    assert $1 "monitor pid missing"
+    [ -z "$MONITOR_PID" ] && return
     #echo "stop monitor, kill ${MONITOR_PID}" > /dev/stderr
     kill -INT ${MONITOR_PID}
 }
@@ -253,7 +258,7 @@ function run-thrill-job() {
     export THRILL_LOG="${WORKLOAD_RESULT_FOLDER}/int_profile"
 
     if [ -n "${SLURM_JOB_NODELIST:-}" ]; then
-        SUBMIT_CMD="${THRILL_HOME}/run/slurm/invoke.sh '${THRILL_HOME}/${THRILL_EXEC}' $@"
+        SUBMIT_CMD="${THRILL_HOME}/run/slurm/invoke.sh ${THRILL_HOME}/${THRILL_EXEC} $@"
         echo ${SUBMIT_CMD}
     elif [ -n "${SLAVES:-}" ]; then
         SUBMIT_CMD="${THRILL_HOME}/run/ssh/invoke.sh -h '$SLAVES' '${THRILL_HOME}/${THRILL_EXEC}' $@"

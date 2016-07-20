@@ -37,6 +37,7 @@ def log_debug(*s):
 import fcntl
 import os
 import subprocess
+import commands
 import time
 
 def nonBlockRead(output):
@@ -90,7 +91,7 @@ def execute_cmd(cmdline, timeout):
 
     return (p.returncode, stdout, stderr)
 
-def shell(cmd, timeout=5):
+def shell(cmd, timeout=20):
     assert not "${" in cmd, "Error, missing configurations: %s" % ", ".join(re.findall("\$\{(.*)\}", cmd))
     retcode, stdout, stderr = execute_cmd(cmd, timeout)
     if retcode == 'Timeout':
@@ -437,6 +438,12 @@ def generate_optional_value():  # get some critical values from environment or m
                 HibenchConf['hibench.masters.hostnames'] = ''     # no master
                 HibenchConf['hibench.slaves.hostnames'] = " ".join(f.readlines())
                 HibenchConfRef['hibench.masters.hostnames'] = HibenchConfRef['hibench.slaves.hostnames'] = "Got from boxes.txt"
+        elif spark_master == "slurm":
+            out_bytes = subprocess.check_output(['expandnodes',os.environ.get('SLURM_JOB_NODELIST')])
+            out_text = out_bytes.decode('utf-8')
+            HibenchConf['hibench.masters.hostnames'] = ''     # no master
+            HibenchConf['hibench.slaves.hostnames'] = out_text
+            HibenchConfRef['hibench.masters.hostnames'] = HibenchConfRef['hibench.slaves.hostnames'] = "Got from boxes.txt"
         elif spark_master.startswith("yarn"): # yarn mode
             yarn_executable = os.path.join(os.path.dirname(HibenchConf['hibench.hadoop.executable']), "yarn")
             cmd = "( " + yarn_executable + " node -list 2> /dev/null | grep RUNNING )"
