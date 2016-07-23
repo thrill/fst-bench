@@ -28,9 +28,11 @@ SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
 
 run-spark-job org.apache.spark.examples.mllib.JavaKMeans $INPUT_HDFS/samples $K -$MAX_ITERATION
-END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
+END_TIME=`timestamp`
+OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
+
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE}
 show_bannar finish
 leave_bench
 

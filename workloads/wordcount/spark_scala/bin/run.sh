@@ -27,10 +27,13 @@ rmr-hdfs $OUTPUT_HDFS || true
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-spark-job com.intel.sparkbench.wordcount.ScalaWordCount $INPUT_HDFS $OUTPUT_HDFS
-END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
+run-spark-job com.intel.sparkbench.wordcount.ScalaWordCount $INPUT_HDFS $OUTPUT_HDFS
+
+END_TIME=`timestamp`
+OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
+
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE}
 show_bannar finish
 leave_bench
 

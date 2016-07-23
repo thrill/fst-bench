@@ -28,9 +28,12 @@ mkdir $OUTPUT_HDFS
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-thrill-job build/examples/k-means/k-means_run --iterations "$MAX_ITERATION" "$DIMENSIONS" "$K" "$INPUT_HDFS/plain/part-*"
-END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} dimensions=${DIMENSIONS}
+run-thrill-job build/examples/k-means/k-means_run --iterations "$MAX_ITERATION" "$DIMENSIONS" "$K" "$INPUT_HDFS/plain/part-*"
+
+END_TIME=`timestamp`
+OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
+
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE} dimensions=${DIMENSIONS}
 show_bannar finish
 leave_bench

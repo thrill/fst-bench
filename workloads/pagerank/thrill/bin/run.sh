@@ -28,9 +28,12 @@ mkdir $OUTPUT_HDFS
 
 SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
-run-thrill-job build/examples/page_rank/page_rank_run --output "$OUTPUT_HDFS/output" --iterations $NUM_ITERATIONS "$INPUT_HDFS/edges/part-*"
-END_TIME=`timestamp`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
+run-thrill-job build/examples/page_rank/page_rank_run --output "$OUTPUT_HDFS/output" --iterations $NUM_ITERATIONS "$INPUT_HDFS/edges/part-*"
+
+END_TIME=`timestamp`
+OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
+
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE}
 show_bannar finish
 leave_bench

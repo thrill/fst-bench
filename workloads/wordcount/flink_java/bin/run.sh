@@ -31,7 +31,8 @@ START_TIME=`timestamp`
 run-flink-job com.intel.flinkbench.JavaWordCount $INPUT_HDFS $OUTPUT_HDFS
 
 END_TIME=`timestamp`
+OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE}
 show_bannar finish
 leave_bench
