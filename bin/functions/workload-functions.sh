@@ -74,7 +74,7 @@ function start-monitor(){
         disown
         MONITOR2_PID=$!
         #echo "start monitor2, got child pid:${MONITOR2_PID}" > /dev/stderr
-        echo ${MONITOR1_PID} ${MONITOR2_PID:}
+        echo ${MONITOR1_PID} ${MONITOR2_PID}
     else
         echo ""
     fi

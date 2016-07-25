@@ -34,6 +34,9 @@ sudo apt-get install -y software-properties-common
 sudo apt-get install -y wget curl man unzip vim-tiny bc git
 sudo apt-get install -y bmon gdb htop parallel mc xfsprogs ncdu
 
+# ntpd
+sudo apt-get install -y ntp
+
 # compilers and basic tools
 sudo apt-get install -y make gcc cmake cmake-curses-gui global
 
