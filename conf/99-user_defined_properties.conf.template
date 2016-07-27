@@ -75,7 +75,9 @@ spark.io.compression.codec    org.apache.spark.io.SnappyCompressionCodec
 
 # Akka
 spark.akka.frameSize          1000
-spark.akka.timeout            600
+spark.akka.timeout              3600s
+spark.akka.heartbeat.interval   3600s
+spark.akka.askTimeout           3600s
 
 # mllib will use KyroSerializer, ensure the buffer is large enough
 spark.kryoserializer.buffer.mb	 2000

@@ -28,6 +28,15 @@ terasort_prepare() {
     done
 }
 
+prepare_scale() {
+    s=4
+
+    SCALE=$((35 + s)) ./workloads/wordcount/prepare/prepare.sh
+    SCALE=$((22 + s)) ./workloads/pagerank/prepare/prepare.sh
+    SCALE=$((34 + s)) ./workloads/terasort/prepare/prepare.sh
+    SCALE=$((24 + s)) ./workloads/kmeans/prepare/prepare.sh
+}
+
 ################################################################################
 
 function log2 {
@@ -88,6 +97,7 @@ wordcount_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((35 + s))
+
     SCALE=$WEAKSCALE ./workloads/wordcount/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
@@ -158,6 +168,7 @@ pagerank_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((22 + s))
+
     SCALE=$WEAKSCALE ./workloads/pagerank/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
@@ -220,6 +231,7 @@ terasort_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((34 + s))
+
     SCALE=$WEAKSCALE ./workloads/terasort/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
@@ -227,7 +239,8 @@ terasort_scale() {
 
     for run in $RUN_RANGE; do
         SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_scala/bin/run.sh
+        # extremely slow
+        #SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_scala/bin/run.sh
     done
 
     ./setup-ec2/spark-stop.sh
@@ -254,6 +267,7 @@ kmeans_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((24 + s))
+
     SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
 
     ./setup-ec2/spark-stop.sh || true
