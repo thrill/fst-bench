@@ -61,50 +61,7 @@ sudo service nfs-kernel-server start
 ################################################################################
 # Install ceph's Cluster Monitor and MDS on the control box
 
-if [ "$CEPH_RELEASE" != "" ]; then
-
-    # install ceph packages
-    wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
-
-    echo "deb http://download.ceph.com/debian-infernalis/ $(lsb_release -sc) main" \
-        | sudo tee /etc/apt/sources.list.d/ceph.list
-
-    sudo apt-get update && sudo apt-get install -y ceph-deploy
-
-    # move into ceph-deploy configuration directory
-    cd ~
-    mkdir ceph || true
-    cd ceph
-
-    # start new ceph configuration
-    ceph-deploy new $(hostname)
-
-    # one copy per block
-    echo "osd pool default size = 1" >> ceph.conf
-
-    # install ceph packages on control box
-    ceph-deploy install --release infernalis $(hostname)
-
-    # create monitor instance
-    ceph-deploy mon create-initial
-
-    # install ceph admin config on localhost
-    ceph-deploy admin $(hostname)
-    sudo chmod +r /etc/ceph/ceph.client.admin.keyring
-
-    # check health
-    ceph health
-
-    # install MDS server and create FS
-
-    ceph-deploy mds create $(hostname)
-
-    ceph osd pool create cephfs_data 32
-    ceph osd pool create cephfs_metadata 32
-
-    ceph fs new fs0 cephfs_metadata cephfs_data
-
-fi
+[ "$CEPH_RELEASE" != "" ] && $DIR/setup-control-ceph.sh
 
 ################################################################################
 # setup environment hook
