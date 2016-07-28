@@ -16,7 +16,7 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/../../..
+workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
 enter_bench JavaSparkSleep ${workload_root} ${workload_folder}
@@ -27,6 +27,6 @@ run-spark-job com.intel.sparkbench.sleep.JavaSleep $MAP_SLEEP_TIME
 END_TIME=`timestamp`
 SIZE="0"
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench

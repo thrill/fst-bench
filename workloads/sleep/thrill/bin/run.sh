@@ -16,18 +16,22 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/../../..
+workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench ScalaSparkSleep ${workload_root} ${workload_folder}
+SUBMARK=thrill
+enter_bench ThrillSleep ${workload_root} ${workload_folder}
 show_bannar start
 
-START_TIME=`timestamp`
-run-spark-job com.intel.sparkbench.sleep.ScalaSleep $MAP_SLEEP_TIME
-END_TIME=`timestamp`
-SIZE="0"
+rmr-hdfs $OUTPUT_HDFS || true
+mkdir $OUTPUT_HDFS
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+START_TIME=`timestamp`
+
+run-thrill-job build/examples/sleep/sleep $MAP_SLEEP_TIME
+
+END_TIME=`timestamp`
+
+gen_report ${START_TIME} ${END_TIME} dir_size=0
 show_bannar finish
 leave_bench
-

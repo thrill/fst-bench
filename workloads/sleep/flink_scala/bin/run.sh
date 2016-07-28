@@ -16,17 +16,17 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/../../..
+workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench PythonSparkSleep ${workload_root} ${workload_folder}
+enter_bench ScalaFlinkSleep ${workload_root} ${workload_folder}
 show_bannar start
 
 START_TIME=`timestamp`
-run-spark-job ${HIBENCH_PYTHON_PATH}/sleep.py $MAP_SLEEP_TIME
+run-flink-job com.intel.flinkbench.ScalaSleep $MAP_SLEEP_TIME
 END_TIME=`timestamp`
 SIZE="0"
 
-gen_report ${START_TIME} ${END_TIME} ${SIZE}
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE}
 show_bannar finish
 leave_bench
