@@ -415,6 +415,7 @@ function execute_withlog () {
     else                        # pipe, do nothing.
         $CMD
     fi
+    sync
 }
 
 
