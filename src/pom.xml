@@ -33,6 +33,9 @@
 	<scalatest.version>2.2.1</scalatest.version>
 	<scalacheck.version>1.11.3</scalacheck.version>
         <flink.version>1.0.3</flink.version>
+        <spark.version>2.0.0</spark.version>
+        <spark.bin.version>spark1.6</spark.bin.version>
+        <sparkbench.mr.version>2</sparkbench.mr.version>
     </properties>
 
     <repositories>
@@ -115,30 +118,4 @@
         <module>terasort-eastcircle</module>
     </modules>
 
-    <profiles>
-        <profile>
-            <id>MR2</id>
-            <build>
-            </build>
-            <properties>
-                <sparkbench.mr.version>2</sparkbench.mr.version>
-            </properties>
-            <activation>
-                <property><name>!MR1</name></property>
-            </activation>
-        </profile>
-
-	<profile>
-            <id>spark1.6</id>
-            <properties>
-                <env>spark1.6</env>
-                <spark.version>1.6.2</spark.version>
-                <spark.bin.version>1.6</spark.bin.version>
-            </properties>
-            <activation>
-                <property><name>!spark1.6</name></property>
-            </activation>
-
-        </profile>
-    </profiles>
 </project>

@@ -130,7 +130,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <finalName>${project.artifactId}-${project.version}-MR${sparkbench.mr.version}-spark${spark.bin.version}</finalName>
+                            <finalName>${project.artifactId}-${project.version}</finalName>
                         </configuration>
                     </execution>
                 </executions>
@@ -140,7 +140,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>${maven-assembly-plugin.version}</version>
                 <configuration>
-                    <finalName>${project.build.finalName}-MR${sparkbench.mr.version}-spark${spark.bin.version}</finalName>
+                    <finalName>${project.build.finalName}</finalName>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>

@@ -40,6 +40,7 @@ import org.apache.spark.api.java.function.PairFunction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.Iterator;
 
 /**
  * Computes the PageRank of URLs from an input file. Input file should
@@ -107,13 +108,13 @@ public final class JavaPageRank {
       JavaPairRDD<Long, Double> contribs = links.join(ranks).values()
         .flatMapToPair(new PairFlatMapFunction<Tuple2<Iterable<Long>, Double>, Long, Double>() {
           @Override
-          public Iterable<Tuple2<Long, Double>> call(Tuple2<Iterable<Long>, Double> s) {
+          public Iterator<Tuple2<Long, Double>> call(Tuple2<Iterable<Long>, Double> s) {
             int urlCount = Iterables.size(s._1);
             List<Tuple2<Long, Double>> results = new ArrayList<Tuple2<Long, Double>>();
             for (Long n : s._1) {
               results.add(new Tuple2<Long, Double>(n, s._2() / urlCount));
             }
-            return results;
+            return results.iterator();
           }
       });
 
