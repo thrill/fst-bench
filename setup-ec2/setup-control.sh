@@ -4,7 +4,7 @@ set -e
 
 export PYTHON_VERSION=2.7
 export JDK_VERSION=8
-export CEPH_RELEASE=infernalis
+export CEPH_RELEASE=jewel
 #export CEPH_RELEASE=
 
 # Make sure only a user can run our script
@@ -20,7 +20,9 @@ if [ ! $? ]; then
     exit 1
 fi
 
-DIR=`dirname "$0"`
+pushd `dirname $0` > /dev/null
+DIR=`pwd`
+popd > /dev/null
 
 ################################################################################
 # Clone fst-bench on the control box
@@ -50,8 +52,8 @@ echo "StrictHostKeyChecking no" >> ~/.ssh/config
 # Setup control box as NFS server
 
 sudo apt-get install -y nfs-kernel-server ipcalc
-LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
-LOCALMASK=$(ifconfig eth0 | awk '/ Mask:/ { print $4 }' | cut -d ':' -f 2)
+LOCALIP=$(ifconfig ens3 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
+LOCALMASK=$(ifconfig ens3 | awk '/ Mask:/ { print $4 }' | cut -d ':' -f 2)
 LOCALCIDR=$(ipcalc $LOCALIP $LOCALMASK | awk '/Network: / { print $2 }')
 sudo sed -ie '/\/home/d' /etc/exports
 echo "/home   $LOCALCIDR(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports

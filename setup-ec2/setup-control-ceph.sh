@@ -2,7 +2,7 @@
 
 set -e
 
-export CEPH_RELEASE=infernalis
+export CEPH_RELEASE=jewel
 #export CEPH_RELEASE=
 
 # Make sure only a user can run our script
@@ -23,7 +23,7 @@ DIR=`dirname "$0"`
 # install ceph packages
 wget -q -O- 'https://download.ceph.com/keys/release.asc' | sudo apt-key add -
 
-echo "deb http://download.ceph.com/debian-infernalis/ $(lsb_release -sc) main" \
+echo "deb http://download.ceph.com/debian-${CEPH_RELEASE}/ $(lsb_release -sc) main" \
     | sudo tee /etc/apt/sources.list.d/ceph.list
 
 sudo apt-get update && sudo apt-get install -y ceph-deploy
@@ -40,7 +40,7 @@ ceph-deploy new $(hostname)
 echo "osd pool default size = 1" >> ceph.conf
 
 # install ceph packages on control box
-ceph-deploy install --release infernalis $(hostname)
+ceph-deploy install --release ${CEPH_RELEASE} $(hostname)
 
 # create monitor instance
 ceph-deploy mon create-initial

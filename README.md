@@ -28,10 +28,10 @@ We select a `m4.xlarge` on-demand EC2 instance for the control box, and `i2.xlar
 
 Launch a control box. We start with the current standard Ubuntu LTS image.
 ```
-aws ec2 run-instances --image-id ami-f95ef58a \
+aws --region us-east-1 ec2 run-instances --image-id ami-13be557e \
   --key-name rsa.tb2 --instance-type m4.large \
   --security-groups default \
-  --placement "AvailabilityZone=eu-west-1c,GroupName=cluster-1c" \
+  --placement "AvailabilityZone=us-east-1c,GroupName=cluster-1a" \
   --enable-api-termination \
   --block-device-mappings '{ "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 60, "DeleteOnTermination": true, "VolumeType": "gp2" } }' \
   --ebs-optimized
@@ -49,11 +49,11 @@ After running the script, reboot the box to load the newest kernel.
 
 Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
 ```
-aws ec2 request-spot-instances \
-  --spot-price "1.00" --instance-count 1 \
+aws --region us-east-1 ec2 request-spot-instances \
+  --spot-price "1.50" --instance-count 8 \
   --type "one-time" \
   --launch-specification \
-  '{"ImageId": "ami-f95ef58a","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "eu-west-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'
+  '{"ImageId": "ami-13be557e","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "us-east-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'
 ```
 
 For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.

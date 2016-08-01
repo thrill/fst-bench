@@ -10,7 +10,7 @@ ceph health
 
 sudo mkdir /efs || true
 
-LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
+LOCALIP=$(ifconfig ens3 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 ADMINKEY=$(awk '/key = / { print $3 }' ceph.client.admin.keyring)
 
 sudo mount -t ceph $LOCALIP:6789:/ /efs -o name=admin,secret=${ADMINKEY}

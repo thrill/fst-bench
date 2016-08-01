@@ -29,13 +29,21 @@ terasort_prepare() {
     done
 }
 
+# prepare for NEXT weak scaling step
 prepare_scale() {
-    s=4
+    s=$(log2hosts)
+    s=$((s + 1))
 
     SCALE=$((35 + s)) ./workloads/wordcount/prepare/prepare.sh
     SCALE=$((22 + s)) ./workloads/pagerank/prepare/prepare.sh
     SCALE=$((34 + s)) ./workloads/terasort/prepare/prepare.sh
+
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/spark-start.sh
+
     SCALE=$((24 + s)) ./workloads/kmeans/prepare/prepare.sh
+
+    ./setup-ec2/spark-stop.sh
 }
 
 ################################################################################
@@ -126,7 +134,7 @@ wordcount_scale() {
         SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/thrill/bin/run.sh
     done
 
-    [ $CLEANUP != 0 ] && rm -rvf /efs/HiBench/Wordcount/$WEAKSCALE
+    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Wordcount/$WEAKSCALE; fi
 }
 
 ################################################################################
@@ -198,7 +206,7 @@ pagerank_scale() {
         SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/thrill/bin/run.sh
     done
 
-    [ $CLEANUP != 0 ] && rm -rvf /efs/HiBench/Pagerank/$WEAKSCALE
+    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Pagerank/$WEAKSCALE; fi
 }
 
 ################################################################################
@@ -262,7 +270,7 @@ terasort_scale() {
         SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/thrill/bin/run.sh
     done
 
-    [ $CLEANUP != 0 ] && rm -rvf /efs/HiBench/Terasort/$WEAKSCALE
+    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Terasort/$WEAKSCALE; fi
 }
 
 ################################################################################
@@ -298,7 +306,7 @@ sleep_scale() {
         SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/thrill/bin/run.sh
     done
 
-    [ $CLEANUP != 0 ] && rm -rvf /efs/HiBench/Sleep/$WEAKSCALE
+    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Sleep/$WEAKSCALE; fi
 }
 
 ################################################################################
@@ -308,13 +316,13 @@ kmeans_scale() {
     s=$(log2hosts)
     WEAKSCALE=$((24 + s))
 
-    [ -e "/efs/HiBench/Kmeans/$WEAKSCALE" ] || \
-        SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
-
     ./setup-ec2/spark-stop.sh || true
     ./setup-ec2/spark-start.sh
 
-    for run in $RUN_RANGE; do
+    [ -e "/efs/HiBench/Kmeans/$WEAKSCALE" ] || \
+        SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
+
+    for run in $(seq 2 3); do
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_scala/bin/run.sh
     done
@@ -325,7 +333,7 @@ kmeans_scale() {
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/thrill/bin/run.sh
     done
 
-    [ $CLEANUP != 0 ] && rm -rvf /efs/HiBench/Kmeans/$WEAKSCALE
+    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Kmeans/$WEAKSCALE; fi
 }
 
 ################################################################################

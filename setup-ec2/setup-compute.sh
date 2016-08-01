@@ -34,7 +34,7 @@ $SSHTOBOX 'bash' < ~/fst-bench/setup/setup-root.sh
 ################################################################################
 # Setup compute node as Ceph Storage Device
 
-LOCALIP=$(ifconfig eth0 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
+LOCALIP=$(ifconfig ens3 | awk '/ inet addr:/ { print $2 }' | cut -d ':' -f 2)
 
 if [ 1 == 1 ]; then
 
@@ -43,7 +43,7 @@ if [ 1 == 1 ]; then
     ceph health
 
     # install ceph packages on control box
-    ceph-deploy install --release infernalis $BOX
+    ceph-deploy install --release jewel $BOX
 
     # find disks (all of them) and add them to ceph system
     DISKS=$($SSHTOBOX ls /dev/xvd[b])
