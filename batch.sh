@@ -329,6 +329,16 @@ kmeans_scale() {
 
     ./setup-ec2/spark-stop.sh
 
+    ./setup-ec2/flink-stop.sh || true
+    ./setup-ec2/flink-start.sh
+
+    for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/flink_java/bin/run.sh
+        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/flink_scala/bin/run.sh
+    done
+
+    ./setup-ec2/flink-stop.sh
+
     for run in $RUN_RANGE; do
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/thrill/bin/run.sh
     done

@@ -16,28 +16,24 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/..
+workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-enter_bench HadoopPrepareKmeans ${workload_root} ${workload_folder}
+SUBMARK=flink_scala
+enter_bench ScalaFlinkKMeans ${workload_root} ${workload_folder}
 show_bannar start
 
-rmr-hdfs $INPUT_HDFS || true
-ensure-mahout-release
+rmr-hdfs $OUTPUT_HDFS || true
 
+SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
 
-OPTION="-sampleDir ${INPUT_SAMPLE} -clusterDir ${INPUT_CLUSTER} -numClusters ${NUM_OF_CLUSTERS} -numSamples ${NUM_OF_SAMPLES} -samplesPerFile ${SAMPLES_PER_INPUTFILE} -sampleDimension ${DIMENSIONS}"
-export HADOOP_CLASSPATH=`${MAHOUT_HOME}/bin/mahout classpath`
-export_withlog HADOOP_CLASSPATH
-
-run-hadoop-job ${DATATOOLS} org.apache.mahout.clustering.kmeans.GenKMeansDataset -D hadoop.job.history.user.location=${INPUT_SAMPLE} ${KMEANS_COMPRESS_OPT} ${OPTION}
-
-# then convert the SequenceFile into a plain text format
-run-spark-job com.intel.sparkbench.datagen.convert.KmeansConvert ${INPUT_SAMPLE} ${INPUT_HDFS}/plain
-run-spark-job com.intel.sparkbench.datagen.convert.KmeansConvertKluster ${INPUT_HDFS}/cluster ${INPUT_HDFS}/cluster-plain
+run-flink-job com.intel.flinkbench.ScalaKMeans --points "$INPUT_HDFS/plain/" --centroids "$INPUT_HDFS/cluster-plain/" --iterations "$MAX_ITERATION"
 
 END_TIME=`timestamp`
+OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
 
+gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE}
 show_bannar finish
 leave_bench
+
