@@ -63,7 +63,7 @@ sudo service nfs-kernel-server start
 ################################################################################
 # Install ceph's Cluster Monitor and MDS on the control box
 
-[ "$CEPH_RELEASE" != "" ] && $DIR/setup-control-ceph.sh
+[ "$CEPH_RELEASE" != "" ] && ~/fst-bench/setup-ec2/setup-control-ceph.sh
 
 ################################################################################
 # setup environment hook
@@ -85,6 +85,7 @@ cd ~/thrill
 
 sudo dpkg -P maven maven2 maven3
 sudo apt-add-repository -y ppa:andrei-pozolotin/maven3
+sudo sed -i 's/xenial/trusty/' /etc/apt/sources.list.d/andrei-pozolotin-ubuntu-maven3-xenial.list
 sudo apt-get update
 sudo apt-get install -y maven3
 
