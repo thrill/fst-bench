@@ -5,6 +5,7 @@ set -e
 WORDCOUNT_RANGE=$(seq 20 38)
 TERASORT_RANGE=$(seq 30 36)
 PAGERANK_RANGE=$(seq 15 24)
+KMEANS_RANGE=$(seq 24 28)
 RUN_RANGE=$(seq 1 3)
 CLEANUP=1
 
@@ -27,6 +28,19 @@ terasort_prepare() {
     for scale in $RANGE; do
         SCALE=$scale ./workloads/terasort/prepare/prepare.sh
     done
+}
+
+kmeans_prepare() {
+    [ -z $RANGE ] && RANGE=$KMEANS_RANGE
+
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/spark-start.sh
+
+    for scale in $RANGE; do
+        SCALE=$scale ./workloads/kmeans/prepare/prepare.sh
+    done
+
+    ./setup-ec2/spark-stop.sh
 }
 
 # prepare for NEXT weak scaling step

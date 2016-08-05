@@ -22,16 +22,16 @@ The control box hosts a NFS server, which is exported to the compute nodes as `/
 
 Additionally, we setup a ceph distributed file system using the compute machines' ephemeral local disks to store "Big Data". The control box contains only the central ceph services like the metadata server, while the compute nodes are the ODS nodes. The ceph DFS is mounted to `/efs/` on all boxes.
 
-We select a `m4.xlarge` on-demand EC2 instance for the control box, and `i2.xlarge` spot instances for the compute nodes.
+We select a `c3.8xlarge` on-demand EC2 instance for the control box, and `r3.8xlarge` spot instances for the compute nodes.
 
 ### Setup of the Test Cluster
 
 Launch a control box. We start with the current standard Ubuntu LTS image.
 ```
 aws --region us-east-1 ec2 run-instances --image-id ami-13be557e \
-  --key-name rsa.tb2 --instance-type m4.large \
+  --key-name rsa.tb2 --instance-type c3.4xlarge \
   --security-groups default \
-  --placement "AvailabilityZone=us-east-1c,GroupName=cluster-1a" \
+  --placement "AvailabilityZone=us-east-1a,GroupName=cluster-1a" \
   --enable-api-termination \
   --block-device-mappings '{ "DeviceName": "/dev/sda1", "Ebs": { "VolumeSize": 60, "DeleteOnTermination": true, "VolumeType": "gp2" } }' \
   --ebs-optimized
@@ -50,7 +50,7 @@ After running the script, reboot the box to load the newest kernel.
 Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
 ```
 aws --region us-east-1 ec2 request-spot-instances \
-  --spot-price "1.50" --instance-count 8 \
+  --spot-price "2.00" --instance-count 1 \
   --type "one-time" \
   --launch-specification \
   '{"ImageId": "ami-13be557e","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "us-east-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'

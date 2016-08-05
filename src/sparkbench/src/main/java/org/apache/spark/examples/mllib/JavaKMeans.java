@@ -86,7 +86,7 @@ public final class JavaKMeans {
             }
             return Vectors.dense(v);
         }
-    });
+    }).cache();
 
     KMeansModel model = KMeans
         .train(points.rdd(), k, iterations, runs, KMeans.K_MEANS_PARALLEL());

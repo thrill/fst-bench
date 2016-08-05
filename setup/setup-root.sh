@@ -71,6 +71,7 @@ sudo apt-get -y dist-upgrade
 
 # remove docker.io which is on some of the Ubuntu images by default
 sudo dpkg -P docker.io || true
+sudo dpkg -P lxd || true
 
 # cleanup
 sudo apt-get clean
