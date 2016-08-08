@@ -26,7 +26,7 @@ We select a `c3.8xlarge` on-demand EC2 instance for the control box, and `r3.8xl
 
 ### Setup of the Test Cluster
 
-Launch a control box. We start with the current standard Ubuntu LTS image.
+Launch a control box. We start with the current standard Ubuntu LTS image. (On eu-west-1 use ami-0ae77879)
 ```
 aws --region us-east-1 ec2 run-instances --image-id ami-13be557e \
   --key-name rsa.tb2 --instance-type c3.4xlarge \
@@ -47,10 +47,10 @@ The script will first install lots of additional useful packages, then setup the
 
 After running the script, reboot the box to load the newest kernel.
 
-Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image.
+Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image. (On eu-west-1 use ami-0ae77879)
 ```
 aws --region us-east-1 ec2 request-spot-instances \
-  --spot-price "2.00" --instance-count 1 \
+  --spot-price "2.00" --instance-count 8 \
   --type "one-time" \
   --launch-specification \
   '{"ImageId": "ami-13be557e","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "us-east-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'

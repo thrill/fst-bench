@@ -336,7 +336,7 @@ kmeans_scale() {
     [ -e "/efs/HiBench/Kmeans/$WEAKSCALE" ] || \
         SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
 
-    for run in $(seq 2 3); do
+    for run in $RUN_RANGE; do
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_java/bin/run.sh
         SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_scala/bin/run.sh
     done
