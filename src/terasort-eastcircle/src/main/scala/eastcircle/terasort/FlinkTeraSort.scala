@@ -6,6 +6,7 @@ import org.apache.flink.api.common.functions.Partitioner
 import org.apache.flink.api.common.operators.Order
 
 import org.apache.flink.api.scala.hadoop.mapreduce.HadoopOutputFormat
+import org.apache.flink.configuration.GlobalConfiguration
 
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
@@ -38,12 +39,14 @@ object FlinkTeraSort {
     val inputPath= hdfs+args(1)
     val outputPath = hdfs+args(2)
     val partitions = args(3).toInt
+
+    val parallelism = GlobalConfiguration.getInteger("parallelism.default", 0)
     
     val mapredConf = new JobConf()
     mapredConf.set("fs.defaultFS", hdfs)
     mapredConf.set("mapreduce.input.fileinputformat.inputdir", inputPath)
     mapredConf.set("mapreduce.output.fileoutputformat.outputdir", outputPath)
-    mapredConf.setInt("mapreduce.job.reduces", partitions)
+    mapredConf.setInt("mapreduce.job.reduces", parallelism)
 
     val partitionFile = new Path(outputPath, TeraInputFormat.PARTITION_FILENAME)
     val jobContext = Job.getInstance(mapredConf)
