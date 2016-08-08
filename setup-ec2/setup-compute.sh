@@ -42,7 +42,7 @@ if [ 1 == 1 ]; then
     cd ~/ceph
     ceph health
 
-    # install ceph packages on control box
+    # install ceph packages on compute box
     ceph-deploy install --release jewel $BOX
 
     # find disks (all of them) and add them to ceph system
@@ -51,17 +51,8 @@ if [ 1 == 1 ]; then
 
     i=0
     for disk in $DISKS; do
-        # partition disk: one partition
-        $SSHTOBOX "sudo parted -s -a optimal $disk print" || true
-        sleep 2s
-        $SSHTOBOX "sudo parted -s -a optimal $disk mklabel gpt"
-        sleep 2s
-        $SSHTOBOX "sudo parted -s -a optimal $disk mkpart primary xfs 0% 100%"
-        sleep 2s
-        $SSHTOBOX "sudo parted -s -a optimal $disk print"
-        sleep 2s
-        $SSHTOBOX "sudo partx $disk && sudo mkfs.xfs ${disk}1" || true
-        $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk}1 /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
+        $SSHTOBOX "sudo mkfs.xfs ${disk}"
+        $SSHTOBOX "sudo mkdir -p /data$i && sudo mount ${disk} /data$i; sudo chmod a+w /data$i && sudo mkdir -p /data$i/ceph"
         #$SSHTOBOX "sudo mkdir -p /data$i/tmp/ && sudo mount -o bind /data$i/tmp/ /tmp/ && sudo chmod a+wt /tmp/"
 
         ceph-deploy osd prepare $BOX:/data$i/ceph/
