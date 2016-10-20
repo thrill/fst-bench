@@ -50,7 +50,7 @@ object ScalaWordCount {
     val env = ExecutionEnvironment.getExecutionEnvironment
     val text = env.readTextFile(textPath)
 
-    val counts = text.flatMap { _.toLowerCase.split("\\W+") filter { _.nonEmpty } }
+    val counts = text.flatMap { _.split(" ") filter { _.nonEmpty } }
       .map { (_, 1) }
       .groupBy(0)
       .sum(1)
