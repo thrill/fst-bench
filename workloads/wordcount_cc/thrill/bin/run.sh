@@ -20,7 +20,7 @@ workload_root=${workload_folder}/../..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
 SUBMARK=thrill
-enter_bench ThrillWordcount ${workload_root} ${workload_folder}
+enter_bench ThrillWordcountCC ${workload_root} ${workload_folder}
 show_bannar start
 
 rmr-hdfs $OUTPUT_HDFS || true

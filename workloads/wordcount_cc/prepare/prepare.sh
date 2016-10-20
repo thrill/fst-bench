@@ -16,24 +16,29 @@
 
 workload_folder=`dirname "$0"`
 workload_folder=`cd "$workload_folder"; pwd`
-workload_root=${workload_folder}/../..
+workload_root=${workload_folder}/..
 . "${workload_root}/../../bin/functions/load-bench-config.sh"
 
-SUBMARK=thrill
-enter_bench ThrillWordcount ${workload_root} ${workload_folder}
+enter_bench HadoopPrepareWordcountCC ${workload_root} ${workload_folder}
 show_bannar start
 
-rmr-hdfs $OUTPUT_HDFS || true
-mkdir $OUTPUT_HDFS
-
-SIZE=`dir_size $INPUT_HDFS`
+rmr-hdfs $INPUT_HDFS || true
 START_TIME=`timestamp`
 
-run-thrill-job build/examples/word_count/word_count_run --output "$OUTPUT_HDFS/output" "$INPUT_HDFS/*"
+# run-hadoop-job ${HADOOP_EXAMPLES_JAR} randomtextwriter \
+#     -D ${BYTES_TOTAL_NAME}=${DATASIZE} \
+#     -D ${MAP_CONFIG_NAME}=${NUM_MAPS} \
+#     -D ${REDUCER_CONFIG_NAME}=${NUM_REDS} \
+#     ${COMPRESS_OPT} \
+#     ${INPUT_HDFS}
+
+#run-spark-job com.intel.sparkbench.datagen.RandomTextWriter $INPUT_HDFS ${DATASIZE}
+
+OUT=${INPUT_HDFS##file://}
+
+mkdir -p "$OUT"
+$workload_folder/cc_download.sh ${DATASIZE} ${OUT}/
+sync
 
 END_TIME=`timestamp`
-OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
 
-gen_report ${START_TIME} ${END_TIME} dir_size=${SIZE} output_size=${OUTPUT_SIZE}
-show_bannar finish
-leave_bench
