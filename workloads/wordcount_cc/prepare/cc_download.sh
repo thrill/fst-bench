@@ -25,4 +25,4 @@ echo "cc_download.sh: fetching $NARCHIVES archives into $OUTBASE"
 
     NARCHIVES=$((NARCHIVES - 1))
     [ $NARCHIVES == 0 ] && break
-done ) | parallel
+done ) | parallel --sshloginfile ~/boxes.txt
