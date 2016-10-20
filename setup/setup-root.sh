@@ -32,7 +32,7 @@ sudo apt-get -y dist-upgrade
 sudo apt-get install -y build-essential
 sudo apt-get install -y software-properties-common
 sudo apt-get install -y wget curl man unzip vim-tiny bc git
-sudo apt-get install -y bmon gdb htop parallel mc xfsprogs ncdu
+sudo apt-get install -y bmon gdb htop parallel mc xfsprogs ncdu linux-tools-generic
 
 # ntpd
 sudo apt-get install -y ntp
