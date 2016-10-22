@@ -3,6 +3,7 @@
 set -e
 
 WORDCOUNT_RANGE=$(seq 20 38)
+WORDCOUNT_CC_RANGE=$(seq 20 38)
 TERASORT_RANGE=$(seq 30 36)
 PAGERANK_RANGE=$(seq 15 24)
 KMEANS_RANGE=$(seq 24 28)
@@ -149,6 +150,43 @@ wordcount_scale() {
     done
 
     if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Wordcount/$WEAKSCALE; fi
+}
+
+################################################################################
+
+wordcount_cc_scale() {
+
+    s=$(log2hosts)
+    WEAKSCALE=$((12 + s))
+
+    [ -e "/efs/HiBench/WordcountCC/$WEAKSCALE" ] || \
+        SCALE=$WEAKSCALE ./workloads/wordcount_cc/prepare/prepare.sh
+
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/spark-start.sh
+
+    for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/spark_java/bin/run.sh
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/spark_scala/bin/run.sh
+    done
+
+    ./setup-ec2/spark-stop.sh
+
+    ./setup-ec2/flink-stop.sh || true
+    ./setup-ec2/flink-start.sh
+
+    for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/flink_java/bin/run.sh
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/flink_scala/bin/run.sh
+    done
+
+    ./setup-ec2/flink-stop.sh
+
+    for run in $RUN_RANGE; do
+        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/thrill/bin/run.sh
+    done
+
+    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/WordcountCC/$WEAKSCALE; fi
 }
 
 ################################################################################
@@ -364,6 +402,7 @@ kmeans_scale() {
 
 all_scale() {
     wordcount_scale
+    wordcount_cc_scale
     pagerank_scale
     terasort_scale
     sleep_scale

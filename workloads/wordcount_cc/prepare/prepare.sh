@@ -38,6 +38,8 @@ OUT=${INPUT_HDFS##file://}
 
 mkdir -p "$OUT"
 $workload_folder/cc_download.sh ${DATASIZE} ${OUT}/
+# run twice to fix errors
+$workload_folder/cc_download.sh ${DATASIZE} ${OUT}/
 sync
 
 END_TIME=`timestamp`
