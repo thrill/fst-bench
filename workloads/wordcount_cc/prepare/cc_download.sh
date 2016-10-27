@@ -11,6 +11,9 @@ OUTBASE=$2
 
 echo "cc_download.sh: fetching $NARCHIVES archives into $OUTBASE"
 
+JOBS=`wc -l ~/boxes.txt`
+JOBS=$((JOBS * 4))
+
 ( for WET in $WETS; do
     OUTFILE="$WET"
     # strip off /crawl-data/
@@ -25,4 +28,4 @@ echo "cc_download.sh: fetching $NARCHIVES archives into $OUTBASE"
 
     NARCHIVES=$((NARCHIVES - 1))
     [ $NARCHIVES == 0 ] && break
-done ) | parallel --sshloginfile ~/boxes.txt
+done ) | parallel --sshloginfile ~/boxes.txt --jobs $JOBS
