@@ -33,7 +33,7 @@
 	<scalatest.version>2.2.1</scalatest.version>
 	<scalacheck.version>1.11.3</scalacheck.version>
         <flink.version>1.0.3</flink.version>
-        <spark.version>2.0.0</spark.version>
+        <spark.version>2.0.1</spark.version>
         <spark.bin.version>spark1.6</spark.bin.version>
         <sparkbench.mr.version>2</sparkbench.mr.version>
     </properties>

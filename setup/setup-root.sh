@@ -39,7 +39,7 @@ sudo apt-get install -y ntp
 
 # compilers and basic tools
 sudo apt-get install -y make gcc cmake cmake-curses-gui global
-sudo apt-get install -y libz-dev libbz2-dev libcurl4-openssl-dev
+sudo apt-get install -y libz-dev libbz2-dev libxml2-dev libcurl4-openssl-dev libssl-dev
 
 # python
 sudo apt-get install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-dev
