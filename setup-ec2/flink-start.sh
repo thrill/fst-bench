@@ -14,6 +14,11 @@ sed -ie "s/^jobmanager.heap.mb:.*$/jobmanager.heap.mb: 512/" $FLINK_HOME/conf/fl
 sed -ie "s/^taskmanager.heap.mb:.*$/taskmanager.heap.mb: 200000/" $FLINK_HOME/conf/flink-conf.yaml
 sed -ie "s/^taskmanager.numberOfTaskSlots:.*$/taskmanager.numberOfTaskSlots: 32/" $FLINK_HOME/conf/flink-conf.yaml
 
+# longer timeout
+if [ `grep -c "akka.ask.timeout:" "$FLINK_HOME/conf/flink-conf.yaml"` == 0 ]; then
+    echo "akka.ask.timeout: 3600 s" >> $FLINK_HOME/conf/flink-conf.yaml
+fi
+
 parallelism=$(cat ~/boxes.txt | wc -l)
 parallelism=$((parallelism * 32))
 sed -ie "s/^parallelism.default:.*$/parallelism.default: $parallelism/" $FLINK_HOME/conf/flink-conf.yaml
