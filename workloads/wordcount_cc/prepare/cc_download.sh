@@ -11,7 +11,7 @@ OUTBASE=$2
 
 echo "cc_download.sh: fetching $NARCHIVES archives into $OUTBASE"
 
-JOBS=`wc -l ~/boxes.txt`
+JOBS=`cat ~/boxes.txt | wc -l`
 JOBS=$((JOBS * 4))
 
 ( for WET in $WETS; do

@@ -30,7 +30,7 @@ SIZE=`dir_size $INPUT_HDFS`
 START_TIME=`timestamp`
 
 run-thrill-job build/examples/word_count/word_count_run \
-               --hash_words --output "$OUTPUT_HDFS/output" "$INPUT_HDFS/*"
+               --hash_words --output "$OUTPUT_HDFS/output" "file://$INPUT_HDFS/*"
 
 END_TIME=`timestamp`
 OUTPUT_SIZE=`dir_size $OUTPUT_HDFS`
