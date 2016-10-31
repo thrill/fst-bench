@@ -37,7 +37,8 @@ START_TIME=`timestamp`
 OUT=${INPUT_HDFS##file://}
 
 mkdir -p "$OUT"
-$HOME/thrill/build/examples/word_count/random_text_writer ${DATASIZE} > ${OUT}/input.txt
+run-thrill-job build/examples/word_count/random_text_writer --parallel --output "${OUT}/input.txt" ${DATASIZE}
+
 sync
 
 END_TIME=`timestamp`
