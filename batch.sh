@@ -8,7 +8,11 @@ TERASORT_RANGE=$(seq 30 36)
 PAGERANK_RANGE=$(seq 15 24)
 KMEANS_RANGE=$(seq 24 28)
 RUN_RANGE=$(seq 1 3)
-CLEANUP=1
+
+RUN_SPARK=1
+RUN_FLINK=1
+RUN_THRILL=1
+RUN_CLEANUP=1
 
 wordcount_prepare() {
     [ -z $RANGE ] && RANGE=$WORDCOUNT_RANGE
@@ -78,78 +82,46 @@ function log2hosts {
 
 ################################################################################
 
-wordcount_spark() {
-    [ -z $RANGE ] && RANGE=$WORDCOUNT_RANGE
-    ./setup-ec2/spark-start.sh
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            if [ $((scale % 2)) == 0 ]; then
-                SCALE=$scale RUN=$run ./workloads/wordcount/spark_java/bin/run.sh
-            else
-                SCALE=$scale RUN=$run ./workloads/wordcount/spark_scala/bin/run.sh
-            fi
-        done
-    done
-    ./setup-ec2/spark-stop.sh
-}
-
-wordcount_flink() {
-    [ -z $RANGE ] && RANGE=$WORDCOUNT_RANGE
-    ./setup-ec2/flink-start.sh
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            if [ $((scale % 2)) == 0 ]; then
-                SCALE=$scale RUN=$run ./workloads/wordcount/flink_java/bin/run.sh
-            else
-                SCALE=$scale RUN=$run ./workloads/wordcount/flink_scala/bin/run.sh
-            fi
-        done
-    done
-    ./setup-ec2/flink-stop.sh
-}
-
-wordcount_thrill() {
-    [ -z $RANGE ] && RANGE=$WORDCOUNT_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            SCALE=$scale RUN=$run ./workloads/wordcount/thrill/bin/run.sh
-        done
-    done
-}
-
 wordcount_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((35 + s))
 
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/flink-stop.sh || true
+
     [ -e "/efs/HiBench/Wordcount/$WEAKSCALE" ] || \
         SCALE=$WEAKSCALE ./workloads/wordcount/prepare/prepare.sh
 
-    ./setup-ec2/spark-stop.sh || true
-    ./setup-ec2/spark-start.sh
+    if [ $RUN_SPARK != 0 ]; then
+        ./setup-ec2/spark-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/spark_scala/bin/run.sh
+        done
 
-    ./setup-ec2/spark-stop.sh
+        ./setup-ec2/spark-stop.sh
+    fi
 
-    ./setup-ec2/flink-stop.sh || true
-    ./setup-ec2/flink-start.sh
+    if [ $RUN_FLINK != 0 ]; then
+        ./setup-ec2/flink-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/flink_scala/bin/run.sh
+        done
 
-    ./setup-ec2/flink-stop.sh
+        ./setup-ec2/flink-stop.sh
+    fi
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/thrill/bin/run.sh
-    done
+    if [ $RUN_THRILL != 0 ]; then
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount/thrill/bin/run.sh
+        done
+    fi
 
-    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Wordcount/$WEAKSCALE; fi
+    [ $RUN_CLEANUP != 0 ] && rm -rvf /efs/HiBench/Wordcount/$WEAKSCALE
 }
 
 ################################################################################
@@ -159,170 +131,129 @@ wordcount_cc_scale() {
     s=$(log2hosts)
     WEAKSCALE=$((12 + s))
 
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/flink-stop.sh || true
+
     [ -e "/efs/HiBench/WordcountCC/$WEAKSCALE" ] || \
         SCALE=$WEAKSCALE ./workloads/wordcount_cc/prepare/prepare.sh
 
-    ./setup-ec2/spark-stop.sh || true
-    ./setup-ec2/spark-start.sh
+    if [ $RUN_SPARK != 0 ]; then
+        ./setup-ec2/spark-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/spark_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/spark_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/spark_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/spark_scala/bin/run.sh
+        done
 
-    ./setup-ec2/spark-stop.sh
+        ./setup-ec2/spark-stop.sh
+    fi
 
-    ./setup-ec2/flink-stop.sh || true
-    ./setup-ec2/flink-start.sh
+    if [ $RUN_FLINK != 0 ]; then
+        ./setup-ec2/flink-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/flink_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/flink_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/flink_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/flink_scala/bin/run.sh
+        done
 
-    ./setup-ec2/flink-stop.sh
+        ./setup-ec2/flink-stop.sh
+    fi
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/thrill/bin/run.sh
-    done
+    if [ $RUN_THRILL != 0 ]; then
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/wordcount_cc/thrill/bin/run.sh
+        done
+    fi
 
-    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/WordcountCC/$WEAKSCALE; fi
+    [ $RUN_CLEANUP != 0 ] && rm -rvf /efs/HiBench/WordcountCC/$WEAKSCALE
 }
 
 ################################################################################
-
-pagerank_spark() {
-    [ -z $RANGE ] && RANGE=$PAGERANK_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            if [ $((scale % 2)) == 0 ]; then
-                SCALE=$scale RUN=$run ./workloads/pagerank/spark_java/bin/run.sh
-            else
-                SCALE=$scale RUN=$run ./workloads/pagerank/spark_scala/bin/run.sh
-            fi
-        done
-    done
-}
-
-pagerank_flink() {
-    [ -z $RANGE ] && RANGE=$PAGERANK_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            if [ $((scale % 2)) == 0 ]; then
-                SCALE=$scale RUN=$run ./workloads/pagerank/flink_java/bin/run.sh
-            else
-                SCALE=$scale RUN=$run ./workloads/pagerank/flink_scala/bin/run.sh
-            fi
-        done
-    done
-}
-
-pagerank_thrill() {
-    [ -z $RANGE ] && RANGE=$PAGERANK_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            SCALE=$scale RUN=$run ./workloads/pagerank/thrill/bin/run.sh
-        done
-    done
-}
 
 pagerank_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((22 + s))
 
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/flink-stop.sh || true
+
     [ -e "/efs/HiBench/Pagerank/$WEAKSCALE" ] || \
         SCALE=$WEAKSCALE ./workloads/pagerank/prepare/prepare.sh
 
-    ./setup-ec2/spark-stop.sh || true
-    ./setup-ec2/spark-start.sh
+    if [ $RUN_SPARK != 0 ]; then
+        ./setup-ec2/spark-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE  RUN=$run ./workloads/pagerank/spark_java/bin/run.sh
-        SCALE=$WEAKSCALE  RUN=$run ./workloads/pagerank/spark_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE  RUN=$run ./workloads/pagerank/spark_java/bin/run.sh
+            SCALE=$WEAKSCALE  RUN=$run ./workloads/pagerank/spark_scala/bin/run.sh
+        done
 
-    ./setup-ec2/spark-stop.sh
+        ./setup-ec2/spark-stop.sh
+    fi
 
-    ./setup-ec2/flink-stop.sh || true
-    ./setup-ec2/flink-start.sh
+    if [ $RUN_FLINK != 0 ]; then
+        ./setup-ec2/flink-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/flink_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/flink_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/flink_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/flink_scala/bin/run.sh
+        done
 
-    ./setup-ec2/flink-stop.sh
+        ./setup-ec2/flink-stop.sh
+    fi
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/thrill/bin/run.sh
-    done
+    if [ $RUN_THRILL != 0 ]; then
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/pagerank/thrill/bin/run.sh
+        done
+    fi
 
-    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Pagerank/$WEAKSCALE; fi
+    [ $RUN_CLEANUP != 0 ] && rm -rvf /efs/HiBench/Pagerank/$WEAKSCALE
 }
 
 ################################################################################
-
-terasort_spark() {
-    [ -z $RANGE ] && RANGE=$TERASORT_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            SCALE=$scale RUN=$run ./workloads/terasort/spark_scala/bin/run.sh
-        done
-    done
-}
-
-terasort_flink() {
-    [ -z $RANGE ] && RANGE=$TERASORT_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            SCALE=$scale RUN=$run ./workloads/terasort/flink_scala/bin/run.sh
-        done
-    done
-}
-
-terasort_thrill() {
-    [ -z $RANGE ] && RANGE=$TERASORT_RANGE
-    for scale in $RANGE; do
-        for run in $RUN_RANGE; do
-            SCALE=$scale RUN=$run ./workloads/terasort/thrill/bin/run.sh
-        done
-    done
-}
 
 terasort_scale() {
 
     s=$(log2hosts)
     WEAKSCALE=$((34 + s))
 
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/flink-stop.sh || true
+
     [ -e "/efs/HiBench/Terasort/$WEAKSCALE" ] || \
         SCALE=$WEAKSCALE ./workloads/terasort/prepare/prepare.sh
 
-    ./setup-ec2/spark-stop.sh || true
-    ./setup-ec2/spark-start.sh
+    if [ $RUN_SPARK != 0 ]; then
+        ./setup-ec2/spark-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_java/bin/run.sh
-        # extremely slow
-        #SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_java/bin/run.sh
+            # extremely slow
+            #SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/spark_scala/bin/run.sh
+        done
 
-    ./setup-ec2/spark-stop.sh
+        ./setup-ec2/spark-stop.sh
+    fi
 
-    ./setup-ec2/flink-stop.sh || true
-    ./setup-ec2/flink-start.sh
+    if [ $RUN_FLINK != 0 ]; then
+        ./setup-ec2/flink-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/flink_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/flink_scala/bin/run.sh
+        done
 
-    ./setup-ec2/flink-stop.sh
+        ./setup-ec2/flink-stop.sh
+    fi
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/thrill/bin/run.sh
-    done
+    if [ $RUN_THRILL != 0 ]; then
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/terasort/thrill/bin/run.sh
+        done
+    fi
 
-    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Terasort/$WEAKSCALE; fi
+    [ $RUN_CLEANUP != 0 ] && rm -rvf /efs/HiBench/Terasort/$WEAKSCALE
 }
 
 ################################################################################
@@ -331,34 +262,41 @@ sleep_scale() {
 
     WEAKSCALE=60
 
+    ./setup-ec2/spark-stop.sh || true
+    ./setup-ec2/flink-stop.sh || true
+
     [ -e "/efs/HiBench/Sleep/$WEAKSCALE" ] || \
         SCALE=$WEAKSCALE ./workloads/sleep/prepare/prepare.sh
 
-    ./setup-ec2/spark-stop.sh || true
-    ./setup-ec2/spark-start.sh
+    if [ $RUN_SPARK != 0 ]; then
+        ./setup-ec2/spark-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/spark_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/spark_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/spark_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/spark_scala/bin/run.sh
+        done
 
-    ./setup-ec2/spark-stop.sh
+        ./setup-ec2/spark-stop.sh
+    fi
 
-    ./setup-ec2/flink-stop.sh || true
-    ./setup-ec2/flink-start.sh
+    if [ $RUN_FLINK != 0 ]; then
+        ./setup-ec2/flink-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/flink_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/flink_scala/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/flink_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/flink_scala/bin/run.sh
+        done
 
-    ./setup-ec2/flink-stop.sh
+        ./setup-ec2/flink-stop.sh
+    fi
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/thrill/bin/run.sh
-    done
+    if [ $RUN_THRILL != 0 ]; then
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/sleep/thrill/bin/run.sh
+        done
+    fi
 
-    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Sleep/$WEAKSCALE; fi
+    [ $RUN_CLEANUP != 0 ] && rm -rvf /efs/HiBench/Sleep/$WEAKSCALE
 }
 
 ################################################################################
@@ -369,33 +307,40 @@ kmeans_scale() {
     WEAKSCALE=$((24 + s))
 
     ./setup-ec2/spark-stop.sh || true
-    ./setup-ec2/spark-start.sh
-
-    [ -e "/efs/HiBench/Kmeans/$WEAKSCALE" ] || \
-        SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
-
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_scala/bin/run.sh
-    done
-
-    ./setup-ec2/spark-stop.sh
-
     ./setup-ec2/flink-stop.sh || true
-    ./setup-ec2/flink-start.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/flink_java/bin/run.sh
-        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/flink_scala/bin/run.sh
-    done
+    if [ $RUN_SPARK != 0 ]; then
+        ./setup-ec2/spark-start.sh
 
-    ./setup-ec2/flink-stop.sh
+        [ -e "/efs/HiBench/Kmeans/$WEAKSCALE" ] || \
+            SCALE=$WEAKSCALE ./workloads/kmeans/prepare/prepare.sh
 
-    for run in $RUN_RANGE; do
-        SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/thrill/bin/run.sh
-    done
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/spark_scala/bin/run.sh
+        done
 
-    if [ $CLEANUP != 0 ]; then rm -rvf /efs/HiBench/Kmeans/$WEAKSCALE; fi
+        ./setup-ec2/spark-stop.sh
+    fi
+
+    if [ $RUN_FLINK != 0 ]; then
+        ./setup-ec2/flink-start.sh
+
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/flink_java/bin/run.sh
+            SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/flink_scala/bin/run.sh
+        done
+
+        ./setup-ec2/flink-stop.sh
+    fi
+
+    if [ $RUN_THRILL != 0 ]; then
+        for run in $RUN_RANGE; do
+            SCALE=$WEAKSCALE RUN=$run ./workloads/kmeans/thrill/bin/run.sh
+        done
+    fi
+
+    [ $RUN_CLEANUP != 0 ] && rm -rvf /efs/HiBench/Kmeans/$WEAKSCALE
 }
 
 ################################################################################
