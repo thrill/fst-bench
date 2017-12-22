@@ -26,9 +26,10 @@ We select a `c3.8xlarge` on-demand EC2 instance for the control box, and `r3.8xl
 
 ### Setup of the Test Cluster
 
-Launch a control box. We start with the current standard Ubuntu LTS image. (On eu-west-1 use ami-0ae77879)
+Launch a control box. We start with a current Ubuntu LTS image: ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-20171121.1 - ami-aa2ea6d0
+
 ```
-aws --region us-east-1 ec2 run-instances --image-id ami-13be557e \
+aws --region us-east-1 ec2 run-instances --image-id ami-aa2ea6d0 \
   --key-name rsa.tb2 --instance-type c3.4xlarge \
   --security-groups default \
   --placement "AvailabilityZone=us-east-1a,GroupName=cluster-1a" \
@@ -53,7 +54,7 @@ aws --region us-east-1 ec2 request-spot-instances \
   --spot-price "2.00" --instance-count 8 \
   --type "one-time" \
   --launch-specification \
-  '{"ImageId": "ami-13be557e","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "us-east-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'
+  '{"ImageId": "ami-aa2ea6d0","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "us-east-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'
 ```
 
 For each compute box, run the following setup **on the control box**. Replace $BOXIP with the IP of the compute box in the **internal VPC network**.
