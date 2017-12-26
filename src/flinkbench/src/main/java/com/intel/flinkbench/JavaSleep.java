@@ -25,6 +25,7 @@ import org.apache.flink.api.java.functions.FunctionAnnotation.ForwardedFields;
 import org.apache.flink.util.Collector;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.GlobalConfiguration;
 
 @SuppressWarnings("serial")
@@ -42,8 +43,10 @@ public class JavaSleep {
         // set up execution environment
         final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
+        Configuration config =
+            GlobalConfiguration.loadConfiguration();
         int parallelism =
-            GlobalConfiguration.getInteger("parallelism.default", 0);
+            config.getInteger("parallelism.default", 0);
         System.out.println("Paral: " + parallelism);
 
         // get input data

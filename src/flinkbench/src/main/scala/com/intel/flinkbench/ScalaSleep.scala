@@ -39,7 +39,8 @@ object ScalaSleep {
     }
 
     val seconds = args(0).toLong
-    val parallelism = GlobalConfiguration.getInteger("parallelism.default", 0)
+    val config = GlobalConfiguration.loadConfiguration()
+    val parallelism = config.getInteger("parallelism.default", 0)
 
     // set up execution environment
     val env = ExecutionEnvironment.getExecutionEnvironment
