@@ -67,7 +67,7 @@ function timestamp(){		# get current timestamp
 }
 
 function start-monitor(){
-    if [ -z "${SLURM_JOB_NODELIST:-}" ]; then
+    if [ -n "${SLAVES}" ]; then
         MONITOR1_PID=`${workload_func_bin}/monitor.py ${HIBENCH_CUR_WORKLOAD_NAME} $$ ${WORKLOAD_RESULT_FOLDER}/monitor.log ${WORKLOAD_RESULT_FOLDER}/bench.log ${WORKLOAD_RESULT_FOLDER}/monitor.html ${SLAVES} &`
         #echo "start monitor1, got child pid:${MONITOR1_PID}" > /dev/stderr
         ("${THRILL_HOME}/misc/standalone_profiler_run.sh" -h "${SLAVES}" "${THRILL_HOME}/build/misc/standalone_profiler" "${WORKLOAD_RESULT_FOLDER}/profile" > /dev/null) &

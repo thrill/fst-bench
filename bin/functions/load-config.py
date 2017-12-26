@@ -435,7 +435,8 @@ def generate_optional_value():  # get some critical values from environment or m
                 assert 0, "Get workers from spark master's web UI page failed, reason:%s\nPlease check your configurations, network settings, proxy settings, or set `hibench.masters.hostnames` and `hibench.slaves.hostnames` manually to bypass auto-probe" % e
         elif spark_master == "boxes.txt":
             with open(os.path.expanduser("~/boxes.txt")) as f:
-                HibenchConf['hibench.masters.hostnames'] = ''     # no master
+                HibenchConf['hibench.spark.master'] = 'spark://localhost:7077'
+                HibenchConf['hibench.masters.hostnames'] = ''
                 HibenchConf['hibench.slaves.hostnames'] = " ".join(f.readlines())
                 HibenchConfRef['hibench.masters.hostnames'] = HibenchConfRef['hibench.slaves.hostnames'] = "Got from boxes.txt"
         elif spark_master == "slurm":
