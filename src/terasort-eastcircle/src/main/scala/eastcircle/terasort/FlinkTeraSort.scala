@@ -5,7 +5,7 @@ import org.apache.flink.api.scala._
 import org.apache.flink.api.common.functions.Partitioner
 import org.apache.flink.api.common.operators.Order
 
-import org.apache.flink.api.scala.hadoop.mapred.HadoopOutputFormat
+import org.apache.flink.api.scala.hadoop.mapreduce.HadoopOutputFormat
 import org.apache.flink.hadoopcompatibility.scala.HadoopInputs
 import org.apache.flink.configuration.GlobalConfiguration
 
@@ -13,6 +13,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.Text
 import org.apache.hadoop.mapred.JobConf
 import org.apache.hadoop.mapreduce.Job
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat
 
 class OptimizedFlinkTeraPartitioner(underlying:TotalOrderPartitioner) extends Partitioner[OptimizedText] {
   def partition(key:OptimizedText, numPartitions:Int):Int = {
@@ -57,8 +58,8 @@ object FlinkTeraSort {
 
     val hadoopOutputFormat = new HadoopOutputFormat[Text, Text](
       new TextOutputFormat[Text, Text],
-      new JobConf)
-    hadoopOutputFormat.getJobConf.set("mapred.textoutputformat.separator", " ")
+      jobContext)
+    //hadoopOutputFormat.getJob.set("mapreduce.textoutputformat.separator", " ")
 
     env
       .createInput(
@@ -67,7 +68,6 @@ object FlinkTeraSort {
       .map(tp => (new OptimizedText(tp._1), tp._2))
       .partitionCustom(partitioner, 0).sortPartition(0, Order.ASCENDING)
       .map(tp => (tp._1.getText, tp._2))
-    //.output(new HadoopOutputFormat[Text, Text](new TeraOutputFormat(), jobContext))
       .output(hadoopOutputFormat)
     env.execute("TeraSort")
   }
