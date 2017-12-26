@@ -34,7 +34,15 @@ OPTION="-t pagerank \
         -pbalance -pbalance \
         -o text"
 
-run-hadoop-job ${DATATOOLS} HiBench.DataGen ${OPTION} ${DATATOOLS_COMPRESS_OPT}
+mkdir -p $INPUT_HDFS
+
+# run-hadoop-job ${DATATOOLS} HiBench.DataGen ${OPTION} ${DATATOOLS_COMPRESS_OPT}
+
+mpirun -hostfile ~/boxes.txt \
+       ~/KaGen_Release/build/app/generate_kagen \
+       -gen ba -n ${SCALE} \
+       -md 4 \
+       -output $INPUT_HDFS/edges
 
 END_TIME=`timestamp`
 
