@@ -13,8 +13,8 @@
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.10.4</scala.version>
-        <scala.binary.version>2.10</scala.binary.version>
+        <scala.version>2.11.12</scala.version>
+        <scala.binary.version>2.11</scala.binary.version>
 	<slf4j.version>1.7.5</slf4j.version>
 	<log4j.version>1.2.17</log4j.version>
 	<scopt.version>3.2.0</scopt.version>
@@ -32,8 +32,8 @@
 	<jetty.version>8.1.14.v20131031</jetty.version>
 	<scalatest.version>2.2.1</scalatest.version>
 	<scalacheck.version>1.11.3</scalacheck.version>
-        <flink.version>1.0.3</flink.version>
-        <spark.version>2.0.1</spark.version>
+        <flink.version>1.4.0</flink.version>
+        <spark.version>2.2.1</spark.version>
         <spark.bin.version>spark1.6</spark.bin.version>
         <sparkbench.mr.version>2</sparkbench.mr.version>
     </properties>

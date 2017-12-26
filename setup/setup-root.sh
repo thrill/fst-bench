@@ -41,6 +41,9 @@ sudo apt-get install -y ntp
 sudo apt-get install -y make gcc cmake cmake-curses-gui global
 sudo apt-get install -y libz-dev libbz2-dev libxml2-dev libcurl4-openssl-dev libssl-dev
 
+# things for KaGen Graph Generator
+sudo apt-get install -y libopenmpi-dev libcgal-dev libcgal-qt5-dev libsparsehash-dev
+
 # python
 sudo apt-get install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-dev
 
@@ -59,10 +62,10 @@ sudo apt-get update
 sudo apt-get install -y oracle-java${JDK_VERSION}-installer
 sudo rm -rf /var/cache/oracle-jdk${JDK_VERSION}-installer
 
-# g++-5 or newer from ubuntu-toolchain-r/test PPA
+# g++-7 or newer from ubuntu-toolchain-r/test PPA
 sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
 sudo apt-get update
-sudo apt-get install -y g++-5
+sudo apt-get install -y g++-7
 
 # install newer git from ppa:git-core/candidate PPA
 sudo add-apt-repository -y ppa:git-core/candidate

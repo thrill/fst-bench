@@ -51,7 +51,7 @@ After running the script, reboot the box to load the newest kernel.
 Launch one or more compute boxes. Again we start with the current standard Ubuntu LTS image. (On eu-west-1 use ami-0ae77879)
 ```
 aws --region us-east-1 ec2 request-spot-instances \
-  --spot-price "2.00" --instance-count 8 \
+  --spot-price "2.00" --instance-count 1 \
   --type "one-time" \
   --launch-specification \
   '{"ImageId": "ami-aa2ea6d0","InstanceType": "r3.8xlarge", "KeyName": "rsa.tb2", "SecurityGroups": ["default"], "Placement": {"AvailabilityZone": "us-east-1a", "GroupName": "cluster-1a"}, "EbsOptimized": false }'
